@@ -4,38 +4,38 @@
  * Tổ chức theo từng phần của form (1→5)
  */
 
-'use strict';
+"use strict";
 
 /* ================================================================
    STATE — Lưu trạng thái toàn cục của form
 ================================================================ */
 const state = {
   // Phần 1: Lộ trình
-  pickup: { address: '', lat: null, lng: null },
-  dropoff: { address: '', lat: null, lng: null },
+  pickup: { address: "", lat: null, lng: null },
+  dropoff: { address: "", lat: null, lng: null },
 
   // Phần 2: Xe
-  vehicleType: '',
+  vehicleType: "",
 
   // Phần 3: Liên hệ
   bookForOther: false,
 
   // Phần 4: Thời gian
-  timeMode: 'now',          // 'now' | 'schedule'
-  scheduledTime: '',
-  activeNotes: [],          // mảng các ghi chú nhanh đã chọn
+  timeMode: "now", // 'now' | 'schedule'
+  scheduledTime: "",
+  activeNotes: [], // mảng các ghi chú nhanh đã chọn
 
   // Phần 5: Thanh toán
-  paymentMethod: '',
-  couponCode: '',
+  paymentMethod: "",
+  couponCode: "",
   discountPercent: 0,
 
   // Giá cước (VNĐ)
   pricing: {
-    basePricePerKm: 15000,  // 15.000đ/km (xe máy)
-    carSurcharge:   1.5,    // x1.5 cho ô tô
-    luxurySurcharge: 2.5,   // x2.5 cho xe sang
-    minimumFee:     30000,  // Tối thiểu 30.000đ
+    basePricePerKm: 15000, // 15.000đ/km (xe máy)
+    carSurcharge: 1.5, // x1.5 cho ô tô
+    luxurySurcharge: 2.5, // x2.5 cho xe sang
+    minimumFee: 30000, // Tối thiểu 30.000đ
   },
 
   // Google Maps objects
@@ -46,17 +46,19 @@ const state = {
   directionsRenderer: null,
 
   // User session giả lập
-  user: JSON.parse(localStorage.getItem('bstd_user') || 'null'),
+  user: JSON.parse(localStorage.getItem("bstd_user") || "null"),
 
   // Địa điểm yêu thích đã lưu
-  favoritePlaces: JSON.parse(localStorage.getItem('bstd_places') || '{"home":null,"work":null}'),
+  favoritePlaces: JSON.parse(
+    localStorage.getItem("bstd_places") || '{"home":null,"work":null}',
+  ),
 
   // Mã giảm giá hợp lệ (demo)
   validCoupons: {
-    'SAYGIAM50': { desc: 'Giảm 50%', discount: 50 },
-    'NHAUUI20':  { desc: 'Giảm 20%', discount: 20 },
-    'FIRSTRIDE': { desc: 'Giảm 30% chuyến đầu', discount: 30 },
-    'BSTVIP':    { desc: 'VIP - Giảm 40%', discount: 40 },
+    SAYGIAM50: { desc: "Giảm 50%", discount: 50 },
+    NHAUUI20: { desc: "Giảm 20%", discount: 20 },
+    FIRSTRIDE: { desc: "Giảm 30% chuyến đầu", discount: 30 },
+    BSTVIP: { desc: "VIP - Giảm 40%", discount: 40 },
   },
 
   currentStep: 1,
@@ -75,35 +77,41 @@ const state = {
  * HTML: input#pickupAddress, input#dropoffAddress
  */
 function initAutocomplete() {
-  const pickupInput   = document.getElementById('pickupAddress');
-  const dropoffInput  = document.getElementById('dropoffAddress');
+  const pickupInput = document.getElementById("pickupAddress");
+  const dropoffInput = document.getElementById("dropoffAddress");
 
   // Cấu hình giới hạn gợi ý trong Việt Nam
   const options = {
-    componentRestrictions: { country: 'vn' },
-    fields: ['formatted_address', 'geometry', 'name'],
+    componentRestrictions: { country: "vn" },
+    fields: ["formatted_address", "geometry", "name"],
   };
 
   // Tạo Autocomplete cho ô đón
-  state.autocompletePickup = new google.maps.places.Autocomplete(pickupInput, options);
-  state.autocompletePickup.addListener('place_changed', () => {
+  state.autocompletePickup = new google.maps.places.Autocomplete(
+    pickupInput,
+    options,
+  );
+  state.autocompletePickup.addListener("place_changed", () => {
     const place = state.autocompletePickup.getPlace();
     if (place.geometry) {
       state.pickup.address = place.formatted_address || place.name;
-      state.pickup.lat     = place.geometry.location.lat();
-      state.pickup.lng     = place.geometry.location.lng();
+      state.pickup.lat = place.geometry.location.lat();
+      state.pickup.lng = place.geometry.location.lng();
       tryShowRoutePreview();
     }
   });
 
   // Tạo Autocomplete cho ô đến
-  state.autocompleteDropoff = new google.maps.places.Autocomplete(dropoffInput, options);
-  state.autocompleteDropoff.addListener('place_changed', () => {
+  state.autocompleteDropoff = new google.maps.places.Autocomplete(
+    dropoffInput,
+    options,
+  );
+  state.autocompleteDropoff.addListener("place_changed", () => {
     const place = state.autocompleteDropoff.getPlace();
     if (place.geometry) {
       state.dropoff.address = place.formatted_address || place.name;
-      state.dropoff.lat     = place.geometry.location.lat();
-      state.dropoff.lng     = place.geometry.location.lng();
+      state.dropoff.lat = place.geometry.location.lat();
+      state.dropoff.lng = place.geometry.location.lng();
       tryShowRoutePreview();
     }
   });
@@ -130,7 +138,7 @@ function initMap() {
   // Trung tâm mặc định: Hà Nội
   const hanoi = { lat: 21.0285, lng: 105.8542 };
 
-  state.map = new google.maps.Map(document.getElementById('googleMap'), {
+  state.map = new google.maps.Map(document.getElementById("googleMap"), {
     center: hanoi,
     zoom: 13,
     styles: nightMapStyles(), // Style bản đồ tối (xem cuối file)
@@ -138,12 +146,12 @@ function initMap() {
     zoomControl: true,
   });
 
-  state.directionsService  = new google.maps.DirectionsService();
+  state.directionsService = new google.maps.DirectionsService();
   state.directionsRenderer = new google.maps.DirectionsRenderer({
     map: state.map,
     suppressMarkers: false,
     polylineOptions: {
-      strokeColor: '#f5a623',
+      strokeColor: "#f5a623",
       strokeWeight: 5,
       strokeOpacity: 0.9,
     },
@@ -158,7 +166,7 @@ function initMap() {
  */
 function getGPSLocation() {
   if (!navigator.geolocation) {
-    showToast('Trình duyệt không hỗ trợ định vị 😢', 'error');
+    showToast("Trình duyệt không hỗ trợ định vị 😢", "error");
     return;
   }
 
@@ -173,18 +181,18 @@ function getGPSLocation() {
       // Reverse geocode: tọa độ → địa chỉ văn bản
       reverseGeocode(latitude, longitude, (address) => {
         state.pickup.address = address;
-        document.getElementById('pickupAddress').value = address;
+        document.getElementById("pickupAddress").value = address;
         toggleGPSLoading(false);
-        showToast('📍 Đã lấy vị trí hiện tại!', 'success');
+        showToast("📍 Đã lấy vị trí hiện tại!", "success");
         tryShowRoutePreview();
       });
     },
     (err) => {
       toggleGPSLoading(false);
-      showToast('Không thể lấy vị trí. Vui lòng nhập thủ công 📝', 'error');
-      console.warn('GPS error:', err);
+      showToast("Không thể lấy vị trí. Vui lòng nhập thủ công 📝", "error");
+      console.warn("GPS error:", err);
     },
-    { timeout: 10000, enableHighAccuracy: true }
+    { timeout: 10000, enableHighAccuracy: true },
   );
 }
 
@@ -198,7 +206,7 @@ function getGPSLocation() {
 function reverseGeocode(lat, lng, callback) {
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-    if (status === 'OK' && results[0]) {
+    if (status === "OK" && results[0]) {
       callback(results[0].formatted_address);
     } else {
       callback(`${lat.toFixed(5)}, ${lng.toFixed(5)}`);
@@ -214,9 +222,9 @@ function reverseGeocode(lat, lng, callback) {
  * @param {boolean} isLoading
  */
 function toggleGPSLoading(isLoading) {
-  const el = document.getElementById('gpsLoading');
-  el.classList.toggle('hidden', !isLoading);
-  document.getElementById('btnGPS').disabled = isLoading;
+  const el = document.getElementById("gpsLoading");
+  el.classList.toggle("hidden", !isLoading);
+  document.getElementById("btnGPS").disabled = isLoading;
 }
 
 /**
@@ -228,17 +236,17 @@ function toggleGPSLoading(isLoading) {
 function tryShowRoutePreview() {
   if (!state.pickup.lat || !state.dropoff.lat) return;
 
-  document.getElementById('mapPreview').classList.remove('hidden');
+  document.getElementById("mapPreview").classList.remove("hidden");
 
   // Lấy directions từ Google Maps
   state.directionsService.route(
     {
-      origin:      { lat: state.pickup.lat,   lng: state.pickup.lng   },
-      destination: { lat: state.dropoff.lat,  lng: state.dropoff.lng  },
-      travelMode:  google.maps.TravelMode.DRIVING,
+      origin: { lat: state.pickup.lat, lng: state.pickup.lng },
+      destination: { lat: state.dropoff.lat, lng: state.dropoff.lng },
+      travelMode: google.maps.TravelMode.DRIVING,
     },
     (result, status) => {
-      if (status === 'OK') {
+      if (status === "OK") {
         state.directionsRenderer.setDirections(result);
 
         const leg = result.routes[0].legs[0];
@@ -248,7 +256,7 @@ function tryShowRoutePreview() {
         // Cập nhật thông tin lộ trình + tính giá
         updateRouteInfo(parseFloat(distanceKm), durationMin);
       }
-    }
+    },
   );
 }
 
@@ -261,11 +269,11 @@ function tryShowRoutePreview() {
  * @param {number} minutes
  */
 function updateRouteInfo(km, minutes) {
-  document.getElementById('routeDistance').textContent = km;
-  document.getElementById('routeTime').textContent     = minutes;
+  document.getElementById("routeDistance").textContent = km;
+  document.getElementById("routeTime").textContent = minutes;
 
   const price = calculatePrice(km);
-  document.getElementById('routePrice').textContent = formatVND(price);
+  document.getElementById("routePrice").textContent = formatVND(price);
 
   // Cập nhật bảng tổng giá cuối form
   updatePriceSummary(km);
@@ -287,14 +295,16 @@ function updateRouteInfo(km, minutes) {
  */
 function selectVehicle(type, el) {
   // Bỏ selected tất cả cards cũ
-  document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('selected'));
+  document
+    .querySelectorAll(".vehicle-card")
+    .forEach((c) => c.classList.remove("selected"));
 
   // Thêm selected cho card mới
-  el.classList.add('selected');
+  el.classList.add("selected");
 
   // Lưu vào state và hidden input
   state.vehicleType = type;
-  document.getElementById('vehicleType').value = type;
+  document.getElementById("vehicleType").value = type;
 
   // Cập nhật bảng giá (vì giá thay đổi theo xe)
   const km = parseRouteDistance();
@@ -317,7 +327,7 @@ function selectVehicle(type, el) {
  */
 function prefillPhone() {
   if (state.user && state.user.phone) {
-    document.getElementById('phoneNumber').value = state.user.phone;
+    document.getElementById("phoneNumber").value = state.user.phone;
   }
 }
 
@@ -330,14 +340,14 @@ function prefillPhone() {
  */
 function toggleBookForOther(checked) {
   state.bookForOther = checked;
-  const fields = document.getElementById('otherPersonFields');
-  fields.classList.toggle('hidden', !checked);
+  const fields = document.getElementById("otherPersonFields");
+  fields.classList.toggle("hidden", !checked);
 
   // Slide animation: set max-height động
   if (checked) {
-    fields.style.maxHeight = fields.scrollHeight + 'px';
+    fields.style.maxHeight = fields.scrollHeight + "px";
   } else {
-    fields.style.maxHeight = '0';
+    fields.style.maxHeight = "0";
   }
 }
 
@@ -358,20 +368,22 @@ function switchTimeMode(mode) {
   state.timeMode = mode;
 
   // Toggle active class giữa 2 tab
-  document.getElementById('tabNow').classList.toggle('active', mode === 'now');
-  document.getElementById('tabSchedule').classList.toggle('active', mode === 'schedule');
+  document.getElementById("tabNow").classList.toggle("active", mode === "now");
+  document
+    .getElementById("tabSchedule")
+    .classList.toggle("active", mode === "schedule");
 
   // Hiện/ẩn date-time picker
-  const picker = document.getElementById('schedulePicker');
-  if (mode === 'schedule') {
-    picker.classList.remove('hidden');
-    picker.style.maxHeight = '100px';
+  const picker = document.getElementById("schedulePicker");
+  if (mode === "schedule") {
+    picker.classList.remove("hidden");
+    picker.style.maxHeight = "100px";
     // Mặc định giờ đặt lịch = 1 giờ sau hiện tại
     const d = new Date(Date.now() + 3600000);
-    document.getElementById('scheduledTime').value = toLocalDatetimeInput(d);
+    document.getElementById("scheduledTime").value = toLocalDatetimeInput(d);
   } else {
-    picker.classList.add('hidden');
-    picker.style.maxHeight = '0';
+    picker.classList.add("hidden");
+    picker.style.maxHeight = "0";
   }
 }
 
@@ -382,8 +394,8 @@ function switchTimeMode(mode) {
  * @returns {string}
  */
 function toLocalDatetimeInput(date) {
-  const pad = n => String(n).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
 /**
@@ -395,7 +407,7 @@ function toLocalDatetimeInput(date) {
  * @param {string}  text — nội dung ghi chú tương ứng
  */
 function toggleQuickNote(btn, text) {
-  const isActive = btn.classList.toggle('active');
+  const isActive = btn.classList.toggle("active");
 
   if (isActive) {
     // Thêm ghi chú vào mảng state
@@ -404,7 +416,7 @@ function toggleQuickNote(btn, text) {
     }
   } else {
     // Xóa ghi chú khỏi mảng state
-    state.activeNotes = state.activeNotes.filter(n => n !== text);
+    state.activeNotes = state.activeNotes.filter((n) => n !== text);
   }
 
   // Cập nhật nội dung textarea từ mảng
@@ -417,13 +429,24 @@ function toggleQuickNote(btn, text) {
  * HTML: textarea#driverNote
  */
 function syncNoteTextarea() {
-  const existing = document.getElementById('driverNote').value;
+  const existing = document.getElementById("driverNote").value;
   // Giữ phần gõ tay của user, thêm ghi chú nhanh vào trước
-  const quickPart = state.activeNotes.join('. ');
+  const quickPart = state.activeNotes.join(". ");
   // Tách phần text thủ công (không phải ghi chú nhanh)
-  const allQuick = Array.from(document.querySelectorAll('.quick-note-btn')).map(b => b.getAttribute('onclick').match(/'([^']+)'/g)?.[1]?.replace(/'/g, '') || '');
-  const manualPart = existing.split('. ').filter(line => !allQuick.some(q => line.includes(q.replace(/'/g,'')))).join('. ');
-  document.getElementById('driverNote').value = [quickPart, manualPart].filter(Boolean).join('. ');
+  const allQuick = Array.from(document.querySelectorAll(".quick-note-btn")).map(
+    (b) =>
+      b
+        .getAttribute("onclick")
+        .match(/'([^']+)'/g)?.[1]
+        ?.replace(/'/g, "") || "",
+  );
+  const manualPart = existing
+    .split(". ")
+    .filter((line) => !allQuick.some((q) => line.includes(q.replace(/'/g, ""))))
+    .join(". ");
+  document.getElementById("driverNote").value = [quickPart, manualPart]
+    .filter(Boolean)
+    .join(". ");
 }
 
 /* ================================================================
@@ -441,10 +464,12 @@ function syncNoteTextarea() {
  * @param {Element} el     — element được click
  */
 function selectPayment(method, el) {
-  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
+  document
+    .querySelectorAll(".payment-option")
+    .forEach((o) => o.classList.remove("selected"));
+  el.classList.add("selected");
   state.paymentMethod = method;
-  document.getElementById('paymentMethod').value = method;
+  document.getElementById("paymentMethod").value = method;
   updateStepBar(5);
 }
 
@@ -455,24 +480,24 @@ function selectPayment(method, el) {
  * CSS:  .coupon-result.success, .coupon-result.error
  */
 function applyCoupon() {
-  const code    = document.getElementById('couponCode').value.trim().toUpperCase();
-  const coupon  = state.validCoupons[code];
+  const code = document.getElementById("couponCode").value.trim().toUpperCase();
+  const coupon = state.validCoupons[code];
 
   if (!code) {
-    showCouponResult('Vui lòng nhập mã giảm giá', 'error');
+    showCouponResult("Vui lòng nhập mã giảm giá", "error");
     return;
   }
 
   if (coupon) {
-    state.couponCode      = code;
+    state.couponCode = code;
     state.discountPercent = coupon.discount;
-    showCouponResult(`🎉 Áp dụng thành công! ${coupon.desc}`, 'success');
+    showCouponResult(`🎉 Áp dụng thành công! ${coupon.desc}`, "success");
     const km = parseRouteDistance();
     updatePriceSummary(km > 0 ? km : 0);
   } else {
-    state.couponCode      = '';
+    state.couponCode = "";
     state.discountPercent = 0;
-    showCouponResult('Mã không hợp lệ hoặc đã hết hạn 😞', 'error');
+    showCouponResult("Mã không hợp lệ hoặc đã hết hạn 😞", "error");
   }
 }
 
@@ -485,9 +510,9 @@ function applyCoupon() {
  * @param {string} type — 'success' | 'error'
  */
 function showCouponResult(msg, type) {
-  const el = document.getElementById('couponResult');
+  const el = document.getElementById("couponResult");
   el.textContent = msg;
-  el.className   = `coupon-result ${type}`;
+  el.className = `coupon-result ${type}`;
 }
 
 /* ================================================================
@@ -501,14 +526,15 @@ function showCouponResult(msg, type) {
  * @returns {number} giá VNĐ
  */
 function calculatePrice(km) {
-  const { basePricePerKm, carSurcharge, luxurySurcharge, minimumFee } = state.pricing;
+  const { basePricePerKm, carSurcharge, luxurySurcharge, minimumFee } =
+    state.pricing;
   let multiplier = 1;
 
-  if (state.vehicleType.startsWith('car-luxury')) {
+  if (state.vehicleType.startsWith("car-luxury")) {
     multiplier = luxurySurcharge;
-  } else if (state.vehicleType.startsWith('car-')) {
+  } else if (state.vehicleType.startsWith("car-")) {
     multiplier = carSurcharge;
-  } else if (state.vehicleType === 'motorbike-big') {
+  } else if (state.vehicleType === "motorbike-big") {
     multiplier = 1.2;
   }
 
@@ -526,36 +552,41 @@ function calculatePrice(km) {
 function updatePriceSummary(km) {
   if (!km || km <= 0) return;
 
-  const base     = calculatePrice(km);
-  let   surcharge = 0;
+  const base = calculatePrice(km);
+  let surcharge = 0;
 
-  if (state.vehicleType.startsWith('car-luxury')) {
-    surcharge = Math.round(base * 0.4 / 1000) * 1000;
-  } else if (state.vehicleType.startsWith('car-')) {
-    surcharge = Math.round(base * 0.2 / 1000) * 1000;
+  if (state.vehicleType.startsWith("car-luxury")) {
+    surcharge = Math.round((base * 0.4) / 1000) * 1000;
+  } else if (state.vehicleType.startsWith("car-")) {
+    surcharge = Math.round((base * 0.2) / 1000) * 1000;
   }
 
-  const subtotal      = base;
-  let   discount      = 0;
-  let   total         = subtotal;
+  const subtotal = base;
+  let discount = 0;
+  let total = subtotal;
 
   if (state.discountPercent > 0) {
-    discount = Math.round(subtotal * (state.discountPercent / 100) / 1000) * 1000;
-    total    = subtotal - discount;
+    discount =
+      Math.round((subtotal * (state.discountPercent / 100)) / 1000) * 1000;
+    total = subtotal - discount;
   }
 
-  document.getElementById('basePrice').textContent     = formatVND(base - surcharge);
-  document.getElementById('surcharge').textContent     = surcharge > 0 ? formatVND(surcharge) : '0đ';
+  document.getElementById("basePrice").textContent = formatVND(
+    base - surcharge,
+  );
+  document.getElementById("surcharge").textContent =
+    surcharge > 0 ? formatVND(surcharge) : "0đ";
 
-  const discountRow = document.getElementById('discountRow');
+  const discountRow = document.getElementById("discountRow");
   if (discount > 0) {
-    discountRow.classList.remove('hidden');
-    document.getElementById('discountAmount').textContent = '-' + formatVND(discount);
+    discountRow.classList.remove("hidden");
+    document.getElementById("discountAmount").textContent =
+      "-" + formatVND(discount);
   } else {
-    discountRow.classList.add('hidden');
+    discountRow.classList.add("hidden");
   }
 
-  document.getElementById('totalPrice').textContent = formatVND(total);
+  document.getElementById("totalPrice").textContent = formatVND(total);
 }
 
 /**
@@ -564,7 +595,7 @@ function updatePriceSummary(km) {
  * @returns {number} km hoặc 0
  */
 function parseRouteDistance() {
-  const distEl = document.getElementById('routeDistance');
+  const distEl = document.getElementById("routeDistance");
   return distEl ? parseFloat(distEl.textContent) || 0 : 0;
 }
 
@@ -581,12 +612,12 @@ function parseRouteDistance() {
  * CSS:  .coupon-item, .coupon-code, .coupon-desc
  */
 function renderCoupons() {
-  const list = document.getElementById('couponList');
-  list.innerHTML = '';
+  const list = document.getElementById("couponList");
+  list.innerHTML = "";
 
   Object.entries(state.validCoupons).forEach(([code, info]) => {
-    const item = document.createElement('div');
-    item.className = 'coupon-item';
+    const item = document.createElement("div");
+    item.className = "coupon-item";
     item.innerHTML = `
       <div>
         <div class="coupon-code">${code}</div>
@@ -606,7 +637,7 @@ function renderCoupons() {
  * CSS:  .modal-overlay, .hidden
  */
 function openCouponModal() {
-  document.getElementById('couponModal').classList.remove('hidden');
+  document.getElementById("couponModal").classList.remove("hidden");
 }
 
 /**
@@ -618,7 +649,7 @@ function openCouponModal() {
 function closeCouponModal(event) {
   // Chỉ đóng nếu click vào overlay (không phải nội dung bên trong)
   if (!event || event.target === event.currentTarget) {
-    document.getElementById('couponModal').classList.add('hidden');
+    document.getElementById("couponModal").classList.add("hidden");
   }
 }
 
@@ -629,7 +660,7 @@ function closeCouponModal(event) {
  * @param {string} code
  */
 function selectCouponFromList(code) {
-  document.getElementById('couponCode').value = code;
+  document.getElementById("couponCode").value = code;
   closeCouponModal();
   applyCoupon();
 }
@@ -645,7 +676,7 @@ function selectCouponFromList(code) {
  * Mở modal lưu địa điểm yêu thích
  */
 function openSavePlaceModal() {
-  document.getElementById('savePlaceModal').classList.remove('hidden');
+  document.getElementById("savePlaceModal").classList.remove("hidden");
 }
 
 /**
@@ -654,7 +685,7 @@ function openSavePlaceModal() {
  */
 function closeSavePlaceModal(event) {
   if (!event || event.target === event.currentTarget) {
-    document.getElementById('savePlaceModal').classList.add('hidden');
+    document.getElementById("savePlaceModal").classList.add("hidden");
   }
 }
 
@@ -664,21 +695,21 @@ function closeSavePlaceModal(event) {
  * HTML: input#placeLabel, input#placeAddress
  */
 function saveFavoritePlace() {
-  const label   = document.getElementById('placeLabel').value.trim();
-  const address = document.getElementById('placeAddress').value.trim();
+  const label = document.getElementById("placeLabel").value.trim();
+  const address = document.getElementById("placeAddress").value.trim();
 
   if (!label || !address) {
-    showToast('Vui lòng nhập đủ thông tin 📝', 'error');
+    showToast("Vui lòng nhập đủ thông tin 📝", "error");
     return;
   }
 
   // Lưu vào localStorage với key = label slug
-  const key = label.toLowerCase().replace(/\s+/g, '_');
+  const key = label.toLowerCase().replace(/\s+/g, "_");
   state.favoritePlaces[key] = { label, address };
-  localStorage.setItem('bstd_places', JSON.stringify(state.favoritePlaces));
+  localStorage.setItem("bstd_places", JSON.stringify(state.favoritePlaces));
 
   closeSavePlaceModal();
-  showToast(`✅ Đã lưu "${label}"`, 'success');
+  showToast(`✅ Đã lưu "${label}"`, "success");
   renderFavoritePlaces();
 }
 
@@ -689,30 +720,32 @@ function saveFavoritePlace() {
  * CSS:  .quick-place-btn
  */
 function renderFavoritePlaces() {
-  const container = document.querySelector('.quick-places');
+  const container = document.querySelector(".quick-places");
   // Xóa các nút cũ (trừ nút "Thêm")
-  const addBtn = document.getElementById('btnSavePlace');
-  const existing = container.querySelectorAll('.dynamic-place-btn');
-  existing.forEach(b => b.remove());
+  const addBtn = document.getElementById("btnSavePlace");
+  const existing = container.querySelectorAll(".dynamic-place-btn");
+  existing.forEach((b) => b.remove());
 
   // Render home + work mặc định nếu có
-  const defaultKeys = { home: '🏠 Về nhà', work: '🏢 Cơ quan' };
+  const defaultKeys = { home: "🏠 Về nhà", work: "🏢 Cơ quan" };
   Object.entries(defaultKeys).forEach(([key, label]) => {
-    const btn = document.getElementById(key === 'home' ? 'btnHome' : 'btnWork');
+    const btn = document.getElementById(key === "home" ? "btnHome" : "btnWork");
     if (btn) {
       // Nếu chưa có địa chỉ → hiển thị với style khác
       const hasAddr = state.favoritePlaces[key];
-      btn.style.opacity = hasAddr ? '1' : '0.5';
-      btn.title = hasAddr ? state.favoritePlaces[key].address : 'Chưa có địa chỉ';
+      btn.style.opacity = hasAddr ? "1" : "0.5";
+      btn.title = hasAddr
+        ? state.favoritePlaces[key].address
+        : "Chưa có địa chỉ";
     }
   });
 
   // Render các địa điểm tùy chỉnh đã lưu
   Object.entries(state.favoritePlaces).forEach(([key, info]) => {
-    if (!info || key === 'home' || key === 'work') return;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'quick-place-btn dynamic-place-btn';
+    if (!info || key === "home" || key === "work") return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "quick-place-btn dynamic-place-btn";
     btn.textContent = `📌 ${info.label}`;
     btn.onclick = () => selectFavoritePlace(key);
     container.insertBefore(btn, addBtn);
@@ -729,31 +762,37 @@ function renderFavoritePlaces() {
 function selectFavoritePlace(type) {
   const place = state.favoritePlaces[type];
   if (!place || !place.address) {
-    showToast('Chưa có địa chỉ. Hãy lưu địa điểm trước! 📍', 'error');
+    showToast("Chưa có địa chỉ. Hãy lưu địa điểm trước! 📍", "error");
     return;
   }
 
-  document.getElementById('dropoffAddress').value = place.address;
+  document.getElementById("dropoffAddress").value = place.address;
   state.dropoff.address = place.address;
 
   // Highlight nút đang active
-  document.querySelectorAll('.quick-place-btn').forEach(b => b.classList.remove('active'));
+  document
+    .querySelectorAll(".quick-place-btn")
+    .forEach((b) => b.classList.remove("active"));
   // Tìm và active đúng nút
-  const targetId = type === 'home' ? 'btnHome' : type === 'work' ? 'btnWork' : null;
-  if (targetId) document.getElementById(targetId)?.classList.add('active');
+  const targetId =
+    type === "home" ? "btnHome" : type === "work" ? "btnWork" : null;
+  if (targetId) document.getElementById(targetId)?.classList.add("active");
 
-  showToast(`🏁 Điểm đến: ${place.label || place.address}`, 'success');
+  showToast(`🏁 Điểm đến: ${place.label || place.address}`, "success");
 
   // Geocode địa chỉ để lấy tọa độ
   if (window.google) {
     const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: place.address, componentRestrictions: { country: 'vn' } }, (results, status) => {
-      if (status === 'OK' && results[0]) {
-        state.dropoff.lat = results[0].geometry.location.lat();
-        state.dropoff.lng = results[0].geometry.location.lng();
-        tryShowRoutePreview();
-      }
-    });
+    geocoder.geocode(
+      { address: place.address, componentRestrictions: { country: "vn" } },
+      (results, status) => {
+        if (status === "OK" && results[0]) {
+          state.dropoff.lat = results[0].geometry.location.lat();
+          state.dropoff.lng = results[0].geometry.location.lng();
+          tryShowRoutePreview();
+        }
+      },
+    );
   }
 }
 
@@ -774,11 +813,11 @@ function updateStepBar(step) {
   if (step <= state.currentStep) return; // Chỉ tiến lên
   state.currentStep = step;
 
-  document.querySelectorAll('.step').forEach(el => {
+  document.querySelectorAll(".step").forEach((el) => {
     const s = parseInt(el.dataset.step);
-    el.classList.remove('active', 'done');
-    if (s < step)     el.classList.add('done');
-    if (s === step)   el.classList.add('active');
+    el.classList.remove("active", "done");
+    if (s < step) el.classList.add("done");
+    if (s === step) el.classList.add("active");
   });
 }
 
@@ -800,16 +839,16 @@ function handleFormSubmit(event) {
   if (!validateForm()) return;
 
   // Giả lập gọi API đặt xe
-  const btn = document.getElementById('btnSubmit');
+  const btn = document.getElementById("btnSubmit");
   btn.disabled = true;
-  btn.querySelector('.submit-text').textContent = 'Đang đặt xe...';
-  btn.querySelector('.submit-arrow').textContent = '⏳';
+  btn.querySelector(".submit-text").textContent = "Đang đặt xe...";
+  btn.querySelector(".submit-arrow").textContent = "⏳";
 
   // Simulate API delay
   setTimeout(() => {
     btn.disabled = false;
-    btn.querySelector('.submit-text').textContent = 'ĐẶT XE NGAY';
-    btn.querySelector('.submit-arrow').textContent = '→';
+    btn.querySelector(".submit-text").textContent = "ĐẶT XE NGAY";
+    btn.querySelector(".submit-arrow").textContent = "→";
     showSuccessModal();
   }, 2000);
 }
@@ -821,28 +860,28 @@ function handleFormSubmit(event) {
  */
 function validateForm() {
   const checks = [
-    { id: 'pickupAddress',  msg: 'Vui lòng nhập điểm đón 📍' },
-    { id: 'dropoffAddress', msg: 'Vui lòng nhập điểm đến 🏁' },
-    { id: 'vehicleType',    msg: 'Vui lòng chọn loại xe 🚗' },
-    { id: 'vehiclePlate',   msg: 'Vui lòng nhập biển số xe 🔖' },
-    { id: 'phoneNumber',    msg: 'Vui lòng nhập số điện thoại 📞' },
-    { id: 'paymentMethod',  msg: 'Vui lòng chọn phương thức thanh toán 💳' },
+    { id: "pickupAddress", msg: "Vui lòng nhập điểm đón 📍" },
+    { id: "dropoffAddress", msg: "Vui lòng nhập điểm đến 🏁" },
+    { id: "vehicleType", msg: "Vui lòng chọn loại xe 🚗" },
+    { id: "vehiclePlate", msg: "Vui lòng nhập biển số xe 🔖" },
+    { id: "phoneNumber", msg: "Vui lòng nhập số điện thoại 📞" },
+    { id: "paymentMethod", msg: "Vui lòng chọn phương thức thanh toán 💳" },
   ];
 
   for (const { id, msg } of checks) {
     const el = document.getElementById(id);
     if (!el || !el.value.trim()) {
-      showToast(msg, 'error');
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      showToast(msg, "error");
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
       el?.focus();
       return false;
     }
   }
 
   // Validate SĐT: 10-11 số
-  const phone = document.getElementById('phoneNumber').value.replace(/\s/g, '');
+  const phone = document.getElementById("phoneNumber").value.replace(/\s/g, "");
   if (!/^0\d{9,10}$/.test(phone)) {
-    showToast('Số điện thoại không hợp lệ 📞', 'error');
+    showToast("Số điện thoại không hợp lệ 📞", "error");
     return false;
   }
 
@@ -862,7 +901,7 @@ function validateForm() {
  * CSS:  .success-modal
  */
 function showSuccessModal() {
-  document.getElementById('successModal').classList.remove('hidden');
+  document.getElementById("successModal").classList.remove("hidden");
 }
 
 /**
@@ -870,7 +909,7 @@ function showSuccessModal() {
  * Mở link theo dõi tài xế (demo)
  */
 function trackDriver() {
-  showToast('🗺️ Tính năng theo dõi tài xế sẽ ra mắt sớm!', 'info');
+  showToast("🗺️ Tính năng theo dõi tài xế sẽ ra mắt sớm!", "info");
 }
 
 /**
@@ -879,34 +918,40 @@ function trackDriver() {
  * HTML: form#bookingForm
  */
 function resetForm() {
-  document.getElementById('successModal').classList.add('hidden');
-  document.getElementById('bookingForm').reset();
+  document.getElementById("successModal").classList.add("hidden");
+  document.getElementById("bookingForm").reset();
 
   // Reset state
-  state.pickup         = { address: '', lat: null, lng: null };
-  state.dropoff        = { address: '', lat: null, lng: null };
-  state.vehicleType    = '';
-  state.paymentMethod  = '';
+  state.pickup = { address: "", lat: null, lng: null };
+  state.dropoff = { address: "", lat: null, lng: null };
+  state.vehicleType = "";
+  state.paymentMethod = "";
   state.discountPercent = 0;
-  state.couponCode     = '';
-  state.activeNotes    = [];
-  state.currentStep    = 1;
+  state.couponCode = "";
+  state.activeNotes = [];
+  state.currentStep = 1;
 
   // Reset UI
-  document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('selected'));
-  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-  document.querySelectorAll('.quick-note-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('mapPreview').classList.add('hidden');
-  document.getElementById('couponResult').classList.add('hidden');
-  document.getElementById('otherPersonFields').classList.add('hidden');
+  document
+    .querySelectorAll(".vehicle-card")
+    .forEach((c) => c.classList.remove("selected"));
+  document
+    .querySelectorAll(".payment-option")
+    .forEach((o) => o.classList.remove("selected"));
+  document
+    .querySelectorAll(".quick-note-btn")
+    .forEach((b) => b.classList.remove("active"));
+  document.getElementById("mapPreview").classList.add("hidden");
+  document.getElementById("couponResult").classList.add("hidden");
+  document.getElementById("otherPersonFields").classList.add("hidden");
 
   // Reset steps
   updateStepBarToStart();
 
   // Cuộn lên đầu
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
-  showToast('✨ Đã reset form. Đặt xe mới!', 'success');
+  showToast("✨ Đã reset form. Đặt xe mới!", "success");
 }
 
 /**
@@ -915,9 +960,9 @@ function resetForm() {
  */
 function updateStepBarToStart() {
   state.currentStep = 1;
-  document.querySelectorAll('.step').forEach(el => {
-    el.classList.remove('active', 'done');
-    if (parseInt(el.dataset.step) === 1) el.classList.add('active');
+  document.querySelectorAll(".step").forEach((el) => {
+    el.classList.remove("active", "done");
+    if (parseInt(el.dataset.step) === 1) el.classList.add("active");
   });
 }
 
@@ -935,17 +980,19 @@ function handleLogin() {
   if (state.user) {
     // Đã đăng nhập → đăng xuất
     state.user = null;
-    localStorage.removeItem('bstd_user');
-    document.getElementById('btnLogin').innerHTML = '<span class="login-icon">👤</span><span class="login-text">Đăng nhập</span>';
-    document.getElementById('phoneNumber').value = '';
-    showToast('Đã đăng xuất', 'info');
+    localStorage.removeItem("bstd_user");
+    document.getElementById("btnLogin").innerHTML =
+      '<span class="login-icon">👤</span><span class="login-text">Đăng nhập</span>';
+    document.getElementById("phoneNumber").value = "";
+    showToast("Đã đăng xuất", "info");
   } else {
     // Chưa đăng nhập → giả lập đăng nhập demo
-    state.user = { name: 'Nguyễn Văn Say', phone: '0912345678' };
-    localStorage.setItem('bstd_user', JSON.stringify(state.user));
-    document.getElementById('btnLogin').innerHTML = `<span class="login-icon">😄</span><span class="login-text">${state.user.name.split(' ').pop()}</span>`;
+    state.user = { name: "Nguyễn Văn Say", phone: "0912345678" };
+    localStorage.setItem("bstd_user", JSON.stringify(state.user));
+    document.getElementById("btnLogin").innerHTML =
+      `<span class="login-icon">😄</span><span class="login-text">${state.user.name.split(" ").pop()}</span>`;
     prefillPhone();
-    showToast(`Xin chào ${state.user.name}! 🍺`, 'success');
+    showToast(`Xin chào ${state.user.name}! 🍺`, "success");
   }
 }
 
@@ -965,15 +1012,15 @@ let toastTimeout = null;
  * @param {string} message
  * @param {string} type — 'success' | 'error' | 'info'
  */
-function showToast(message, type = 'info') {
-  const toast = document.getElementById('toastNotify');
+function showToast(message, type = "info") {
+  const toast = document.getElementById("toastNotify");
   toast.textContent = message;
-  toast.className   = `toast ${type} show`;
+  toast.className = `toast ${type} show`;
 
   // Tự ẩn sau 3s
   clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
-    toast.classList.remove('show');
+    toast.classList.remove("show");
   }, 3000);
 }
 
@@ -988,7 +1035,7 @@ function showToast(message, type = 'info') {
  * @returns {string} vd: "150.000đ"
  */
 function formatVND(amount) {
-  return amount.toLocaleString('vi-VN') + 'đ';
+  return amount.toLocaleString("vi-VN") + "đ";
 }
 
 /* ================================================================
@@ -1003,16 +1050,44 @@ function formatVND(amount) {
  */
 function nightMapStyles() {
   return [
-    { elementType: 'geometry', stylers: [{ color: '#1d2c4d' }] },
-    { elementType: 'labels.text.fill', stylers: [{ color: '#8ec3b9' }] },
-    { elementType: 'labels.text.stroke', stylers: [{ color: '#1a3646' }] },
-    { featureType: 'administrative.country', elementType: 'geometry.stroke', stylers: [{ color: '#4b6878' }] },
-    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#304a7d' }] },
-    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#255763' }] },
-    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#2c6675' }] },
-    { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#255763' }] },
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0e1626' }] },
-    { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#283d6a' }] },
+    { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
+    { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
+    { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
+    {
+      featureType: "administrative.country",
+      elementType: "geometry.stroke",
+      stylers: [{ color: "#4b6878" }],
+    },
+    {
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [{ color: "#304a7d" }],
+    },
+    {
+      featureType: "road",
+      elementType: "geometry.stroke",
+      stylers: [{ color: "#255763" }],
+    },
+    {
+      featureType: "road.highway",
+      elementType: "geometry",
+      stylers: [{ color: "#2c6675" }],
+    },
+    {
+      featureType: "road.highway",
+      elementType: "geometry.stroke",
+      stylers: [{ color: "#255763" }],
+    },
+    {
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [{ color: "#0e1626" }],
+    },
+    {
+      featureType: "poi",
+      elementType: "geometry",
+      stylers: [{ color: "#283d6a" }],
+    },
   ];
 }
 
@@ -1028,26 +1103,26 @@ function nightMapStyles() {
  */
 (function initStepListeners() {
   const onReady = () => {
-    document.getElementById('pickupAddress')?.addEventListener('input', () => {
-      if (document.getElementById('pickupAddress').value) updateStepBar(1);
+    document.getElementById("pickupAddress")?.addEventListener("input", () => {
+      if (document.getElementById("pickupAddress").value) updateStepBar(1);
     });
-    document.getElementById('dropoffAddress')?.addEventListener('input', () => {
-      if (document.getElementById('dropoffAddress').value) updateStepBar(1);
+    document.getElementById("dropoffAddress")?.addEventListener("input", () => {
+      if (document.getElementById("dropoffAddress").value) updateStepBar(1);
     });
-    document.getElementById('vehiclePlate')?.addEventListener('input', () => {
-      if (document.getElementById('vehiclePlate').value) updateStepBar(2);
+    document.getElementById("vehiclePlate")?.addEventListener("input", () => {
+      if (document.getElementById("vehiclePlate").value) updateStepBar(2);
     });
-    document.getElementById('phoneNumber')?.addEventListener('input', () => {
-      if (document.getElementById('phoneNumber').value) updateStepBar(3);
+    document.getElementById("phoneNumber")?.addEventListener("input", () => {
+      if (document.getElementById("phoneNumber").value) updateStepBar(3);
     });
-    document.getElementById('scheduledTime')?.addEventListener('change', () => {
-      state.scheduledTime = document.getElementById('scheduledTime').value;
+    document.getElementById("scheduledTime")?.addEventListener("change", () => {
+      state.scheduledTime = document.getElementById("scheduledTime").value;
       updateStepBar(4);
     });
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', onReady);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", onReady);
   } else {
     onReady();
   }
@@ -1057,15 +1132,15 @@ function nightMapStyles() {
    INIT — Khởi tạo không cần Google Maps
    (Dự phòng nếu Maps chưa load xong)
 ================================================================ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Nếu đã có user → cập nhật nút đăng nhập
   if (state.user) {
-    document.getElementById('btnLogin').innerHTML =
-      `<span class="login-icon">😄</span><span class="login-text">${state.user.name.split(' ').pop()}</span>`;
+    document.getElementById("btnLogin").innerHTML =
+      `<span class="login-icon">😄</span><span class="login-text">${state.user.name.split(" ").pop()}</span>`;
   }
 
   // Đặt min datetime cho picker = hiện tại
-  const dtInput = document.getElementById('scheduledTime');
+  const dtInput = document.getElementById("scheduledTime");
   if (dtInput) {
     dtInput.min = toLocalDatetimeInput(new Date());
   }
@@ -1075,4 +1150,84 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render coupon demo
   renderCoupons();
+});
+
+// Hàm hiển thị màn hình Tracking (sau khi đặt xe thành công)
+function startBookingFlow() {
+  document.getElementById("successModal").classList.add("hidden");
+  const trackingScreen = document.getElementById("tracking-screen");
+  const findingState = document.getElementById("finding-state");
+  const foundState = document.getElementById("found-state");
+
+  // 1. Hiển thị màn hình overlay và trạng thái đang tìm kiếm
+  trackingScreen.style.display = "flex";
+  findingState.style.display = "flex";
+  foundState.style.display = "none";
+
+  // 2. Giả lập sau 3.5 giây sẽ tìm thấy tài xế
+  setTimeout(() => {
+    findingState.style.display = "none"; // Ẩn radar
+    foundState.style.display = "flex"; // Hiện bản đồ và thẻ tài xế
+  }, 3500);
+}
+
+// Hàm tắt màn hình Tracking (dành cho nút Hủy tìm kiếm)
+function closeTracking() {
+  document.getElementById("tracking-screen").style.display = "none";
+}
+
+// Gắn sự kiện vào nút "ĐẶT XE NGAY" hiện tại của bạn
+document.addEventListener("DOMContentLoaded", function () {
+  // Tìm nút Đặt xe ngay trong HTML của bạn (bạn cần thêm id="btn-submit-booking" vào nút đó)
+  const btnDatXe =
+    document.querySelector('button:contains("ĐẶT XE NGAY")') ||
+    document.querySelector(".btn-submit");
+
+  // Nếu bạn chưa có class/id rõ ràng, hãy thêm onclick="startBookingFlow()" trực tiếp vào HTML của nút ĐẶT XE NGAY.
+});
+
+// --- XỬ LÝ MODAL QUẢN LÝ TÀI KHOẢN ---
+function showAccountModal() {
+  document.getElementById("accountModal").classList.remove("hidden");
+}
+
+function closeAccountModal() {
+  document.getElementById("accountModal").classList.add("hidden");
+}
+
+// --- XỬ LÝ MODAL ĐÁNH GIÁ TÀI XẾ ---
+function showRatingModal() {
+  document.getElementById("ratingModal").classList.remove("hidden");
+}
+
+function closeRatingModal() {
+  document.getElementById("ratingModal").classList.add("hidden");
+}
+
+function submitRating() {
+  alert(
+    "Cảm ơn bạn đã đánh giá! Điểm thưởng đã được cộng vào tài khoản của bạn.",
+  );
+  closeRatingModal();
+}
+
+// --- XỬ LÝ HIỆU ỨNG CHẤM SAO (RATING LOGIC) ---
+document.addEventListener("DOMContentLoaded", function () {
+  const stars = document.querySelectorAll(".star-rating .star");
+
+  stars.forEach((star) => {
+    star.addEventListener("click", function () {
+      let value = this.getAttribute("data-value");
+
+      // Xóa class active của tất cả các sao
+      stars.forEach((s) => s.classList.remove("active"));
+
+      // Thêm class active cho các sao từ 1 đến sao được bấm
+      stars.forEach((s) => {
+        if (s.getAttribute("data-value") <= value) {
+          s.classList.add("active");
+        }
+      });
+    });
+  });
 });

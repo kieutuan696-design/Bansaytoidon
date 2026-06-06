@@ -1,663 +1,982 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bạn Say Tôi Đón 🍺</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bạn Say Tôi Đón 🍺</title>
 
-  <!-- Google Fonts: Bebas Neue (display) + Be Vietnam Pro (body) -->
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Google Fonts: Bebas Neue (display) + Be Vietnam Pro (body) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Google Maps Places API (autocomplete) — key cần thay bằng key thật -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initAutocomplete" async defer></script>
+    <!-- Google Maps Places API (autocomplete) — key cần thay bằng key thật -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initAutocomplete"
+      async
+      defer
+    ></script>
 
-  <!-- File CSS tách riêng -->
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <!-- ========================================================
+    <!-- File CSS tách riêng -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ========================================================
     SECTION: HEADER / BRANDING
     CSS: .header, .logo, .logo-icon, .logo-text, .tagline
     JS: Không có logic JS riêng cho phần này
   ======================================================== -->
-  <header class="header">
-    <div class="logo">
-      <!-- Icon logo: emoji bia + tên thương hiệu -->
-      <span class="logo-icon">🍺</span>
-      <div class="logo-text">
-        <span class="brand-name">Bạn Say Tôi Đón</span>
-        <span class="tagline">Lái xe hộ — An toàn về nhà</span>
+    <header class="header">
+      <div class="logo">
+        <!-- Icon logo: emoji bia + tên thương hiệu -->
+        <span class="logo-icon">🍺</span>
+        <div class="logo-text">
+          <span class="brand-name">Bạn Say Tôi Đón</span>
+          <span class="tagline">Lái xe hộ — An toàn về nhà</span>
+        </div>
       </div>
-    </div>
-    <!-- Nút đăng nhập / avatar nếu đã đăng nhập -->
-    <!-- CSS: .btn-login | JS: handleLogin() -->
-    <button class="btn-login" id="btnLogin" onclick="handleLogin()">
-      <span class="login-icon">👤</span>
-      <span class="login-text">Đăng nhập</span>
-    </button>
-  </header>
+      <!-- Nút đăng nhập / avatar nếu đã đăng nhập -->
+      <!-- CSS: .btn-login | JS: handleLogin() -->
+      <button class="btn-login" id="btnLogin" onclick="showAccountModal()">
+        <span class="login-icon">👤</span>
+        <span class="login-text">Đăng nhập</span>
+      </button>
+    </header>
 
-  <!-- ========================================================
+    <!-- ========================================================
     SECTION: MAIN FORM — Toàn bộ form đặt xe
     CSS: .main-container, .form-card
     JS: handleFormSubmit()
   ======================================================== -->
-  <main class="main-container">
+    <main class="main-container">
+      <!-- Tiêu đề form -->
+      <!-- CSS: .form-header, .form-title, .form-subtitle -->
+      <div class="form-header">
+        <h1 class="form-title">Đặt xe lái hộ</h1>
+        <p class="form-subtitle">Bạn cứ vui — chúng tôi lo phần còn lại 🚗</p>
+      </div>
 
-    <!-- Tiêu đề form -->
-    <!-- CSS: .form-header, .form-title, .form-subtitle -->
-    <div class="form-header">
-      <h1 class="form-title">Đặt xe lái hộ</h1>
-      <p class="form-subtitle">Bạn cứ vui — chúng tôi lo phần còn lại 🚗</p>
-    </div>
+      <!-- Thanh tiến trình bước (Step indicator) -->
+      <!-- CSS: .steps-bar, .step, .step.active, .step.done -->
+      <!-- JS: updateStepBar(step) — cập nhật khi cuộn form -->
+      <div class="steps-bar">
+        <div class="step active" data-step="1">
+          <span class="step-num">1</span>
+          <span class="step-label">Lộ trình</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="2">
+          <span class="step-num">2</span>
+          <span class="step-label">Xe của bạn</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="3">
+          <span class="step-num">3</span>
+          <span class="step-label">Liên hệ</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="4">
+          <span class="step-num">4</span>
+          <span class="step-label">Thời gian</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="5">
+          <span class="step-num">5</span>
+          <span class="step-label">Thanh toán</span>
+        </div>
+      </div>
 
-    <!-- Thanh tiến trình bước (Step indicator) -->
-    <!-- CSS: .steps-bar, .step, .step.active, .step.done -->
-    <!-- JS: updateStepBar(step) — cập nhật khi cuộn form -->
-    <div class="steps-bar">
-      <div class="step active" data-step="1">
-        <span class="step-num">1</span>
-        <span class="step-label">Lộ trình</span>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-step="2">
-        <span class="step-num">2</span>
-        <span class="step-label">Xe của bạn</span>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-step="3">
-        <span class="step-num">3</span>
-        <span class="step-label">Liên hệ</span>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-step="4">
-        <span class="step-num">4</span>
-        <span class="step-label">Thời gian</span>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-step="5">
-        <span class="step-num">5</span>
-        <span class="step-label">Thanh toán</span>
-      </div>
-    </div>
-
-    <form id="bookingForm" class="booking-form" onsubmit="handleFormSubmit(event)" novalidate>
-
-      <!-- ====================================================
+      <form
+        id="bookingForm"
+        class="booking-form"
+        onsubmit="handleFormSubmit(event)"
+        novalidate
+      >
+        <!-- ====================================================
         PHẦN 1: THÔNG TIN LỘ TRÌNH (Quan trọng nhất)
         CSS: .form-section, .section-label, .section-icon
       ==================================================== -->
-      <section class="form-section" id="section-route" data-section="1">
-        <div class="section-header">
-          <!-- Icon + tiêu đề section -->
-          <!-- CSS: .section-icon, .section-title -->
-          <span class="section-icon">📍</span>
-          <h2 class="section-title">Thông tin lộ trình</h2>
-        </div>
-
-        <!-- Điểm đón -->
-        <!-- CSS: .field-group, .field-label, .input-wrapper, .input-icon -->
-        <!-- JS: initAutocomplete() khởi tạo Google Places cho input này -->
-        <div class="field-group">
-          <label class="field-label" for="pickupAddress">
-            Điểm đón hiện tại
-            <span class="required">*</span>
-          </label>
-          <div class="input-wrapper">
-            <!-- Input text — Google Places Autocomplete gắn vào id="pickupAddress" -->
-            <!-- CSS: .address-input | JS: google.maps.places.Autocomplete(el) -->
-            <input
-              type="text"
-              id="pickupAddress"
-              class="address-input"
-              placeholder="Nhập địa chỉ hoặc tên quán..."
-              autocomplete="off"
-              required
-            />
-            <span class="input-icon left-icon">🔍</span>
-
-            <!-- Nút định vị GPS — lấy tọa độ hiện tại của máy -->
-            <!-- CSS: .btn-gps | JS: getGPSLocation() -->
-            <button
-              type="button"
-              class="btn-gps"
-              id="btnGPS"
-              onclick="getGPSLocation()"
-              title="Tự động lấy vị trí của bạn"
-            >
-              <span class="gps-icon">🎯</span>
-              <span class="gps-text">Định vị tôi</span>
-            </button>
-          </div>
-          <!-- Spinner hiển thị khi đang lấy GPS -->
-          <!-- CSS: .gps-loading | JS: toggleGPSLoading(bool) -->
-          <div class="gps-loading hidden" id="gpsLoading">
-            <span class="spinner"></span>
-            Đang lấy vị trí...
-          </div>
-        </div>
-
-        <!-- Điểm đến -->
-        <!-- CSS: .field-group | JS: google.maps.places.Autocomplete(el) -->
-        <div class="field-group">
-          <label class="field-label" for="dropoffAddress">
-            Điểm đến
-            <span class="required">*</span>
-          </label>
-
-          <!-- Địa điểm yêu thích đã lưu (Quick select) -->
-          <!-- CSS: .quick-places, .quick-place-btn, .quick-place-btn.active -->
-          <!-- JS: selectFavoritePlace(type) — điền sẵn địa chỉ vào input -->
-          <div class="quick-places">
-            <span class="quick-label">Chọn nhanh:</span>
-            <button
-              type="button"
-              class="quick-place-btn"
-              id="btnHome"
-              onclick="selectFavoritePlace('home')"
-            >🏠 Về nhà</button>
-            <button
-              type="button"
-              class="quick-place-btn"
-              id="btnWork"
-              onclick="selectFavoritePlace('work')"
-            >🏢 Cơ quan</button>
-            <button
-              type="button"
-              class="quick-place-btn"
-              id="btnSavePlace"
-              onclick="openSavePlaceModal()"
-            >➕ Thêm</button>
+        <section class="form-section" id="section-route" data-section="1">
+          <div class="section-header">
+            <!-- Icon + tiêu đề section -->
+            <!-- CSS: .section-icon, .section-title -->
+            <span class="section-icon">📍</span>
+            <h2 class="section-title">Thông tin lộ trình</h2>
           </div>
 
-          <div class="input-wrapper">
-            <!-- Input điểm đến — Google Places Autocomplete -->
-            <input
-              type="text"
-              id="dropoffAddress"
-              class="address-input"
-              placeholder="Nhà riêng, khách sạn, cơ quan..."
-              autocomplete="off"
-              required
-            />
-            <span class="input-icon left-icon">🏁</span>
-          </div>
-        </div>
+          <!-- Điểm đón -->
+          <!-- CSS: .field-group, .field-label, .input-wrapper, .input-icon -->
+          <!-- JS: initAutocomplete() khởi tạo Google Places cho input này -->
+          <div class="field-group">
+            <label class="field-label" for="pickupAddress">
+              Điểm đón hiện tại
+              <span class="required">*</span>
+            </label>
+            <div class="input-wrapper">
+              <!-- Input text — Google Places Autocomplete gắn vào id="pickupAddress" -->
+              <!-- CSS: .address-input | JS: google.maps.places.Autocomplete(el) -->
+              <input
+                type="text"
+                id="pickupAddress"
+                class="address-input"
+                placeholder="Nhập địa chỉ hoặc tên quán..."
+                autocomplete="off"
+                required
+              />
+              <span class="input-icon left-icon">🔍</span>
 
-        <!-- Bản đồ preview lộ trình (hiển thị sau khi chọn cả 2 địa điểm) -->
-        <!-- CSS: .map-preview, .map-preview.visible | JS: showRoutePreview() -->
-        <div class="map-preview hidden" id="mapPreview">
-          <div id="googleMap" class="google-map"></div>
-          <!-- Thông tin ước tính khoảng cách & giá -->
-          <!-- CSS: .route-info-bar | JS: updateRouteInfo(km, price) -->
-          <div class="route-info-bar" id="routeInfoBar">
-            <span class="route-stat">📏 <strong id="routeDistance">--</strong> km</span>
-            <span class="route-stat">⏱ <strong id="routeTime">--</strong> phút</span>
-            <span class="route-stat price-stat">💰 <strong id="routePrice">--</strong>đ</span>
+              <!-- Nút định vị GPS — lấy tọa độ hiện tại của máy -->
+              <!-- CSS: .btn-gps | JS: getGPSLocation() -->
+              <button
+                type="button"
+                class="btn-gps"
+                id="btnGPS"
+                onclick="getGPSLocation()"
+                title="Tự động lấy vị trí của bạn"
+              >
+                <span class="gps-icon">🎯</span>
+                <span class="gps-text">Định vị tôi</span>
+              </button>
+            </div>
+            <!-- Spinner hiển thị khi đang lấy GPS -->
+            <!-- CSS: .gps-loading | JS: toggleGPSLoading(bool) -->
+            <div class="gps-loading hidden" id="gpsLoading">
+              <span class="spinner"></span>
+              Đang lấy vị trí...
+            </div>
           </div>
-        </div>
-      </section>
 
-      <!-- ====================================================
+          <!-- Điểm đến -->
+          <!-- CSS: .field-group | JS: google.maps.places.Autocomplete(el) -->
+          <div class="field-group">
+            <label class="field-label" for="dropoffAddress">
+              Điểm đến
+              <span class="required">*</span>
+            </label>
+
+            <!-- Địa điểm yêu thích đã lưu (Quick select) -->
+            <!-- CSS: .quick-places, .quick-place-btn, .quick-place-btn.active -->
+            <!-- JS: selectFavoritePlace(type) — điền sẵn địa chỉ vào input -->
+            <div class="quick-places">
+              <span class="quick-label">Chọn nhanh:</span>
+              <button
+                type="button"
+                class="quick-place-btn"
+                id="btnHome"
+                onclick="selectFavoritePlace('home')"
+              >
+                🏠 Về nhà
+              </button>
+              <button
+                type="button"
+                class="quick-place-btn"
+                id="btnWork"
+                onclick="selectFavoritePlace('work')"
+              >
+                🏢 Cơ quan
+              </button>
+              <button
+                type="button"
+                class="quick-place-btn"
+                id="btnSavePlace"
+                onclick="openSavePlaceModal()"
+              >
+                ➕ Thêm
+              </button>
+            </div>
+
+            <div class="input-wrapper">
+              <!-- Input điểm đến — Google Places Autocomplete -->
+              <input
+                type="text"
+                id="dropoffAddress"
+                class="address-input"
+                placeholder="Nhà riêng, khách sạn, cơ quan..."
+                autocomplete="off"
+                required
+              />
+              <span class="input-icon left-icon">🏁</span>
+            </div>
+          </div>
+
+          <!-- Bản đồ preview lộ trình (hiển thị sau khi chọn cả 2 địa điểm) -->
+          <!-- CSS: .map-preview, .map-preview.visible | JS: showRoutePreview() -->
+          <div class="map-preview hidden" id="mapPreview">
+            <div id="googleMap" class="google-map"></div>
+            <!-- Thông tin ước tính khoảng cách & giá -->
+            <!-- CSS: .route-info-bar | JS: updateRouteInfo(km, price) -->
+            <div class="route-info-bar" id="routeInfoBar">
+              <span class="route-stat"
+                >📏 <strong id="routeDistance">--</strong> km</span
+              >
+              <span class="route-stat"
+                >⏱ <strong id="routeTime">--</strong> phút</span
+              >
+              <span class="route-stat price-stat"
+                >💰 <strong id="routePrice">--</strong>đ</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================
         PHẦN 2: THÔNG TIN XE CẦN LÁI HỘ
         CSS: .form-section#section-vehicle
       ==================================================== -->
-      <section class="form-section" id="section-vehicle" data-section="2">
-        <div class="section-header">
-          <span class="section-icon">🚗</span>
-          <h2 class="section-title">Xe của bạn</h2>
-        </div>
-
-        <!-- Chọn loại xe: hiển thị dạng icon card lớn -->
-        <!-- CSS: .vehicle-grid, .vehicle-card, .vehicle-card.selected -->
-        <!-- JS: selectVehicle(type, el) — thêm class selected -->
-        <div class="field-group">
-          <label class="field-label">Loại phương tiện <span class="required">*</span></label>
-          <div class="vehicle-grid" id="vehicleGrid">
-
-            <!-- Thẻ xe máy số sàn -->
-            <div class="vehicle-card" onclick="selectVehicle('motorbike-manual', this)">
-              <span class="vehicle-emoji">🛵</span>
-              <span class="vehicle-name">Xe máy</span>
-              <span class="vehicle-sub">Số sàn</span>
-            </div>
-
-            <!-- Thẻ xe ga -->
-            <div class="vehicle-card" onclick="selectVehicle('motorbike-auto', this)">
-              <span class="vehicle-emoji">🛵</span>
-              <span class="vehicle-name">Xe máy</span>
-              <span class="vehicle-sub">Xe ga</span>
-            </div>
-
-            <!-- Thẻ xe phân khối lớn -->
-            <div class="vehicle-card" onclick="selectVehicle('motorbike-big', this)">
-              <span class="vehicle-emoji">🏍️</span>
-              <span class="vehicle-name">Mô tô</span>
-              <span class="vehicle-sub">Phân khối lớn</span>
-            </div>
-
-            <!-- Thẻ ô tô số sàn -->
-            <div class="vehicle-card" onclick="selectVehicle('car-manual', this)">
-              <span class="vehicle-emoji">🚗</span>
-              <span class="vehicle-name">Ô tô</span>
-              <span class="vehicle-sub">Số sàn</span>
-            </div>
-
-            <!-- Thẻ ô tô số tự động -->
-            <div class="vehicle-card" onclick="selectVehicle('car-auto', this)">
-              <span class="vehicle-emoji">🚙</span>
-              <span class="vehicle-name">Ô tô</span>
-              <span class="vehicle-sub">Số tự động</span>
-            </div>
-
-            <!-- Thẻ xe sang cao cấp -->
-            <div class="vehicle-card premium" onclick="selectVehicle('car-luxury', this)">
-              <span class="vehicle-emoji">🏎️</span>
-              <span class="vehicle-name">Xe sang</span>
-              <span class="vehicle-sub">Cao cấp</span>
-              <!-- Badge đặc biệt -->
-              <!-- CSS: .premium-badge -->
-              <span class="premium-badge">VIP</span>
-            </div>
+        <section class="form-section" id="section-vehicle" data-section="2">
+          <div class="section-header">
+            <span class="section-icon">🚗</span>
+            <h2 class="section-title">Xe của bạn</h2>
           </div>
-          <!-- Input ẩn lưu giá trị loại xe đã chọn -->
-          <!-- JS: selectVehicle() ghi vào đây -->
-          <input type="hidden" id="vehicleType" name="vehicleType" required />
-        </div>
 
-        <!-- Biển số xe / Đặc điểm nhận dạng -->
-        <!-- CSS: .field-group | JS: validatePlate() -->
-        <div class="field-group">
-          <label class="field-label" for="vehiclePlate">
-            Biển số xe / Đặc điểm nhận dạng
-            <span class="required">*</span>
-          </label>
-          <div class="input-wrapper">
-            <input
-              type="text"
-              id="vehiclePlate"
-              class="text-input"
-              placeholder="Ví dụ: 30A-12345 hoặc Xe SH màu đen"
-              required
-            />
-            <span class="input-icon left-icon">🔖</span>
+          <!-- Chọn loại xe: hiển thị dạng icon card lớn -->
+          <!-- CSS: .vehicle-grid, .vehicle-card, .vehicle-card.selected -->
+          <!-- JS: selectVehicle(type, el) — thêm class selected -->
+          <div class="field-group">
+            <label class="field-label"
+              >Loại phương tiện <span class="required">*</span></label
+            >
+            <div class="vehicle-grid" id="vehicleGrid">
+              <!-- Thẻ xe máy số sàn -->
+              <div
+                class="vehicle-card"
+                onclick="selectVehicle('motorbike-manual', this)"
+              >
+                <span class="vehicle-emoji">🛵</span>
+                <span class="vehicle-name">Xe máy</span>
+                <span class="vehicle-sub">Số sàn</span>
+              </div>
+
+              <!-- Thẻ xe ga -->
+              <div
+                class="vehicle-card"
+                onclick="selectVehicle('motorbike-auto', this)"
+              >
+                <span class="vehicle-emoji">🛵</span>
+                <span class="vehicle-name">Xe máy</span>
+                <span class="vehicle-sub">Xe ga</span>
+              </div>
+
+              <!-- Thẻ xe phân khối lớn -->
+              <div
+                class="vehicle-card"
+                onclick="selectVehicle('motorbike-big', this)"
+              >
+                <span class="vehicle-emoji">🏍️</span>
+                <span class="vehicle-name">Mô tô</span>
+                <span class="vehicle-sub">Phân khối lớn</span>
+              </div>
+
+              <!-- Thẻ ô tô số sàn -->
+              <div
+                class="vehicle-card"
+                onclick="selectVehicle('car-manual', this)"
+              >
+                <span class="vehicle-emoji">🚗</span>
+                <span class="vehicle-name">Ô tô</span>
+                <span class="vehicle-sub">Số sàn</span>
+              </div>
+
+              <!-- Thẻ ô tô số tự động -->
+              <div
+                class="vehicle-card"
+                onclick="selectVehicle('car-auto', this)"
+              >
+                <span class="vehicle-emoji">🚙</span>
+                <span class="vehicle-name">Ô tô</span>
+                <span class="vehicle-sub">Số tự động</span>
+              </div>
+
+              <!-- Thẻ xe sang cao cấp -->
+              <div
+                class="vehicle-card premium"
+                onclick="selectVehicle('car-luxury', this)"
+              >
+                <span class="vehicle-emoji">🏎️</span>
+                <span class="vehicle-name">Xe sang</span>
+                <span class="vehicle-sub">Cao cấp</span>
+                <!-- Badge đặc biệt -->
+                <!-- CSS: .premium-badge -->
+                <span class="premium-badge">VIP</span>
+              </div>
+            </div>
+            <!-- Input ẩn lưu giá trị loại xe đã chọn -->
+            <!-- JS: selectVehicle() ghi vào đây -->
+            <input type="hidden" id="vehicleType" name="vehicleType" required />
           </div>
-          <!-- Gợi ý nhỏ bên dưới ô nhập -->
-          <!-- CSS: .field-hint -->
-          <p class="field-hint">Giúp tài xế dễ tìm thấy xe của bạn tại điểm đón 🔍</p>
-        </div>
-      </section>
 
-      <!-- ====================================================
+          <!-- Biển số xe / Đặc điểm nhận dạng -->
+          <!-- CSS: .field-group | JS: validatePlate() -->
+          <div class="field-group">
+            <label class="field-label" for="vehiclePlate">
+              Biển số xe / Đặc điểm nhận dạng
+              <span class="required">*</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="vehiclePlate"
+                class="text-input"
+                placeholder="Ví dụ: 30A-12345 hoặc Xe SH màu đen"
+                required
+              />
+              <span class="input-icon left-icon">🔖</span>
+            </div>
+            <!-- Gợi ý nhỏ bên dưới ô nhập -->
+            <!-- CSS: .field-hint -->
+            <p class="field-hint">
+              Giúp tài xế dễ tìm thấy xe của bạn tại điểm đón 🔍
+            </p>
+          </div>
+        </section>
+
+        <!-- ====================================================
         PHẦN 3: THÔNG TIN LIÊN HỆ
         CSS: .form-section#section-contact
       ==================================================== -->
-      <section class="form-section" id="section-contact" data-section="3">
-        <div class="section-header">
-          <span class="section-icon">📞</span>
-          <h2 class="section-title">Thông tin liên hệ</h2>
-        </div>
-
-        <!-- Số điện thoại người đi -->
-        <!-- CSS: .field-group | JS: prefillPhone() — tự điền nếu đã đăng nhập -->
-        <div class="field-group">
-          <label class="field-label" for="phoneNumber">
-            Số điện thoại người đi
-            <span class="required">*</span>
-          </label>
-          <div class="input-wrapper">
-            <!-- prefix +84 -->
-            <span class="phone-prefix">🇻🇳 +84</span>
-            <input
-              type="tel"
-              id="phoneNumber"
-              class="text-input phone-input"
-              placeholder="0912 345 678"
-              maxlength="11"
-              required
-            />
+        <section class="form-section" id="section-contact" data-section="3">
+          <div class="section-header">
+            <span class="section-icon">📞</span>
+            <h2 class="section-title">Thông tin liên hệ</h2>
           </div>
-        </div>
 
-        <!-- Checkbox: Đặt hộ người khác -->
-        <!-- CSS: .toggle-row, .custom-checkbox | JS: toggleBookForOther() -->
-        <div class="field-group">
-          <label class="toggle-row" for="bookForOther">
-            <input
-              type="checkbox"
-              id="bookForOther"
-              class="custom-checkbox"
-              onchange="toggleBookForOther(this.checked)"
-            />
-            <span class="toggle-label">Đặt hộ người khác</span>
-            <span class="toggle-hint">(Người thân, bạn bè)</span>
-          </label>
-        </div>
-
-        <!-- Ô nhập thêm khi tick "Đặt hộ người khác" -->
-        <!-- CSS: .other-person-fields, .other-person-fields.visible -->
-        <!-- JS: toggleBookForOther() toggle class visible -->
-        <div class="other-person-fields hidden" id="otherPersonFields">
-          <!-- Tên người đi -->
+          <!-- Số điện thoại người đi -->
+          <!-- CSS: .field-group | JS: prefillPhone() — tự điền nếu đã đăng nhập -->
           <div class="field-group">
-            <label class="field-label" for="otherName">Tên người đi</label>
+            <label class="field-label" for="phoneNumber">
+              Số điện thoại người đi
+              <span class="required">*</span>
+            </label>
             <div class="input-wrapper">
-              <input
-                type="text"
-                id="otherName"
-                class="text-input"
-                placeholder="Nguyễn Văn A"
-              />
-              <span class="input-icon left-icon">👤</span>
-            </div>
-          </div>
-          <!-- Số điện thoại người đi (người được đặt hộ) -->
-          <div class="field-group">
-            <label class="field-label" for="otherPhone">Số điện thoại người đi</label>
-            <div class="input-wrapper">
+              <!-- prefix +84 -->
               <span class="phone-prefix">🇻🇳 +84</span>
               <input
                 type="tel"
-                id="otherPhone"
+                id="phoneNumber"
                 class="text-input phone-input"
                 placeholder="0912 345 678"
                 maxlength="11"
+                required
               />
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- ====================================================
+          <!-- Checkbox: Đặt hộ người khác -->
+          <!-- CSS: .toggle-row, .custom-checkbox | JS: toggleBookForOther() -->
+          <div class="field-group">
+            <label class="toggle-row" for="bookForOther">
+              <input
+                type="checkbox"
+                id="bookForOther"
+                class="custom-checkbox"
+                onchange="toggleBookForOther(this.checked)"
+              />
+              <span class="toggle-label">Đặt hộ người khác</span>
+              <span class="toggle-hint">(Người thân, bạn bè)</span>
+            </label>
+          </div>
+
+          <!-- Ô nhập thêm khi tick "Đặt hộ người khác" -->
+          <!-- CSS: .other-person-fields, .other-person-fields.visible -->
+          <!-- JS: toggleBookForOther() toggle class visible -->
+          <div class="other-person-fields hidden" id="otherPersonFields">
+            <!-- Tên người đi -->
+            <div class="field-group">
+              <label class="field-label" for="otherName">Tên người đi</label>
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  id="otherName"
+                  class="text-input"
+                  placeholder="Nguyễn Văn A"
+                />
+                <span class="input-icon left-icon">👤</span>
+              </div>
+            </div>
+            <!-- Số điện thoại người đi (người được đặt hộ) -->
+            <div class="field-group">
+              <label class="field-label" for="otherPhone"
+                >Số điện thoại người đi</label
+              >
+              <div class="input-wrapper">
+                <span class="phone-prefix">🇻🇳 +84</span>
+                <input
+                  type="tel"
+                  id="otherPhone"
+                  class="text-input phone-input"
+                  placeholder="0912 345 678"
+                  maxlength="11"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================
         PHẦN 4: THỜI GIAN & GHI CHÚ
         CSS: .form-section#section-time
       ==================================================== -->
-      <section class="form-section" id="section-time" data-section="4">
-        <div class="section-header">
-          <span class="section-icon">⏰</span>
-          <h2 class="section-title">Thời gian & Ghi chú</h2>
-        </div>
-
-        <!-- Chọn thời gian đón -->
-        <!-- CSS: .time-tabs, .time-tab, .time-tab.active -->
-        <!-- JS: switchTimeMode(mode) — toggle giữa "ngay bây giờ" và "đặt lịch" -->
-        <div class="field-group">
-          <label class="field-label">Thời gian đón</label>
-          <div class="time-tabs">
-            <!-- Tab "Đón ngay" — mặc định active -->
-            <button
-              type="button"
-              class="time-tab active"
-              id="tabNow"
-              onclick="switchTimeMode('now')"
-            >⚡ Đón ngay bây giờ</button>
-
-            <!-- Tab "Đặt lịch trước" -->
-            <button
-              type="button"
-              class="time-tab"
-              id="tabSchedule"
-              onclick="switchTimeMode('schedule')"
-            >📅 Đặt lịch trước</button>
+        <section class="form-section" id="section-time" data-section="4">
+          <div class="section-header">
+            <span class="section-icon">⏰</span>
+            <h2 class="section-title">Thời gian & Ghi chú</h2>
           </div>
 
-          <!-- Ô chọn ngày/giờ — chỉ hiện khi chọn "Đặt lịch trước" -->
-          <!-- CSS: .schedule-picker, .schedule-picker.visible -->
-          <!-- JS: switchTimeMode('schedule') toggle class visible -->
-          <div class="schedule-picker hidden" id="schedulePicker">
-            <div class="input-wrapper">
-              <input
-                type="datetime-local"
-                id="scheduledTime"
-                class="text-input datetime-input"
-              />
-              <span class="input-icon left-icon">🗓</span>
+          <!-- Chọn thời gian đón -->
+          <!-- CSS: .time-tabs, .time-tab, .time-tab.active -->
+          <!-- JS: switchTimeMode(mode) — toggle giữa "ngay bây giờ" và "đặt lịch" -->
+          <div class="field-group">
+            <label class="field-label">Thời gian đón</label>
+            <div class="time-tabs">
+              <!-- Tab "Đón ngay" — mặc định active -->
+              <button
+                type="button"
+                class="time-tab active"
+                id="tabNow"
+                onclick="switchTimeMode('now')"
+              >
+                ⚡ Đón ngay bây giờ
+              </button>
+
+              <!-- Tab "Đặt lịch trước" -->
+              <button
+                type="button"
+                class="time-tab"
+                id="tabSchedule"
+                onclick="switchTimeMode('schedule')"
+              >
+                📅 Đặt lịch trước
+              </button>
+            </div>
+
+            <!-- Ô chọn ngày/giờ — chỉ hiện khi chọn "Đặt lịch trước" -->
+            <!-- CSS: .schedule-picker, .schedule-picker.visible -->
+            <!-- JS: switchTimeMode('schedule') toggle class visible -->
+            <div class="schedule-picker hidden" id="schedulePicker">
+              <div class="input-wrapper">
+                <input
+                  type="datetime-local"
+                  id="scheduledTime"
+                  class="text-input datetime-input"
+                />
+                <span class="input-icon left-icon">🗓</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Ghi chú cho tài xế -->
-        <!-- CSS: .field-group, .quick-notes, .quick-note-btn -->
-        <!-- JS: toggleQuickNote(btn, text) — toggle ghi chú nhanh vào textarea -->
-        <div class="field-group">
-          <label class="field-label" for="driverNote">Ghi chú cho tài xế</label>
+          <!-- Ghi chú cho tài xế -->
+          <!-- CSS: .field-group, .quick-notes, .quick-note-btn -->
+          <!-- JS: toggleQuickNote(btn, text) — toggle ghi chú nhanh vào textarea -->
+          <div class="field-group">
+            <label class="field-label" for="driverNote"
+              >Ghi chú cho tài xế</label
+            >
 
-          <!-- Nút ghi chú nhanh -->
-          <div class="quick-notes" id="quickNotes">
-            <button
-              type="button"
-              class="quick-note-btn"
-              onclick="toggleQuickNote(this, 'Tôi đang ở trong quán')"
-            >🏮 Tôi đang ở trong quán</button>
+            <!-- Nút ghi chú nhanh -->
+            <div class="quick-notes" id="quickNotes">
+              <button
+                type="button"
+                class="quick-note-btn"
+                onclick="toggleQuickNote(this, 'Tôi đang ở trong quán')"
+              >
+                🏮 Tôi đang ở trong quán
+              </button>
 
-            <button
-              type="button"
-              class="quick-note-btn"
-              onclick="toggleQuickNote(this, 'Xe gửi ở hầm giữ xe')"
-            >🅿️ Xe gửi ở hầm giữ xe</button>
+              <button
+                type="button"
+                class="quick-note-btn"
+                onclick="toggleQuickNote(this, 'Xe gửi ở hầm giữ xe')"
+              >
+                🅿️ Xe gửi ở hầm giữ xe
+              </button>
 
-            <button
-              type="button"
-              class="quick-note-btn"
-              onclick="toggleQuickNote(this, 'Đang say xỉn cần hỗ trợ lên xe')"
-            >🥴 Cần hỗ trợ lên xe</button>
+              <button
+                type="button"
+                class="quick-note-btn"
+                onclick="
+                  toggleQuickNote(this, 'Đang say xỉn cần hỗ trợ lên xe')
+                "
+              >
+                🥴 Cần hỗ trợ lên xe
+              </button>
 
-            <button
-              type="button"
-              class="quick-note-btn"
-              onclick="toggleQuickNote(this, 'Có mang theo thú cưng')"
-            >🐾 Có thú cưng</button>
+              <button
+                type="button"
+                class="quick-note-btn"
+                onclick="toggleQuickNote(this, 'Có mang theo thú cưng')"
+              >
+                🐾 Có thú cưng
+              </button>
+            </div>
+
+            <!-- Textarea ghi chú tự do -->
+            <!-- CSS: .note-textarea | JS: toggleQuickNote() ghi nội dung vào đây -->
+            <textarea
+              id="driverNote"
+              class="note-textarea"
+              rows="3"
+              placeholder="Hoặc gõ ghi chú thêm cho tài xế..."
+            ></textarea>
           </div>
+        </section>
 
-          <!-- Textarea ghi chú tự do -->
-          <!-- CSS: .note-textarea | JS: toggleQuickNote() ghi nội dung vào đây -->
-          <textarea
-            id="driverNote"
-            class="note-textarea"
-            rows="3"
-            placeholder="Hoặc gõ ghi chú thêm cho tài xế..."
-          ></textarea>
-        </div>
-      </section>
-
-      <!-- ====================================================
+        <!-- ====================================================
         PHẦN 5: THANH TOÁN & ƯU ĐÃI
         CSS: .form-section#section-payment
       ==================================================== -->
-      <section class="form-section" id="section-payment" data-section="5">
-        <div class="section-header">
-          <span class="section-icon">💳</span>
-          <h2 class="section-title">Thanh toán & Ưu đãi</h2>
-        </div>
-
-        <!-- Mã giảm giá -->
-        <!-- CSS: .coupon-row | JS: applyCoupon() -->
-        <div class="field-group">
-          <label class="field-label" for="couponCode">Mã giảm giá</label>
-          <div class="coupon-row">
-            <div class="input-wrapper coupon-input-wrap">
-              <input
-                type="text"
-                id="couponCode"
-                class="text-input"
-                placeholder="Nhập mã ưu đãi..."
-                style="text-transform: uppercase;"
-              />
-              <span class="input-icon left-icon">🎟</span>
-            </div>
-            <!-- Nút áp dụng mã -->
-            <!-- CSS: .btn-apply | JS: applyCoupon() -->
-            <button type="button" class="btn-apply" onclick="applyCoupon()">Áp dụng</button>
+        <section class="form-section" id="section-payment" data-section="5">
+          <div class="section-header">
+            <span class="section-icon">💳</span>
+            <h2 class="section-title">Thanh toán & Ưu đãi</h2>
           </div>
-          <!-- Nút chọn mã ưu đãi có sẵn -->
-          <!-- CSS: .btn-browse-coupon | JS: openCouponModal() -->
-          <button type="button" class="btn-browse-coupon" onclick="openCouponModal()">
-            🎁 Chọn mã ưu đãi có sẵn
-          </button>
-          <!-- Thông báo kết quả coupon (thành công / lỗi) -->
-          <!-- CSS: .coupon-result, .coupon-result.success, .coupon-result.error -->
-          <!-- JS: showCouponResult(msg, type) -->
-          <div class="coupon-result hidden" id="couponResult"></div>
-        </div>
 
-        <!-- Phương thức thanh toán -->
-        <!-- CSS: .payment-grid, .payment-option, .payment-option.selected -->
-        <!-- JS: selectPayment(method, el) -->
-        <div class="field-group">
-          <label class="field-label">Phương thức thanh toán <span class="required">*</span></label>
-          <div class="payment-grid" id="paymentGrid">
-
-            <!-- Tiền mặt -->
-            <div class="payment-option" onclick="selectPayment('cash', this)">
-              <span class="payment-icon">💵</span>
-              <span class="payment-name">Tiền mặt</span>
+          <!-- Mã giảm giá -->
+          <!-- CSS: .coupon-row | JS: applyCoupon() -->
+          <div class="field-group">
+            <label class="field-label" for="couponCode">Mã giảm giá</label>
+            <div class="coupon-row">
+              <div class="input-wrapper coupon-input-wrap">
+                <input
+                  type="text"
+                  id="couponCode"
+                  class="text-input"
+                  placeholder="Nhập mã ưu đãi..."
+                  style="text-transform: uppercase"
+                />
+                <span class="input-icon left-icon">🎟</span>
+              </div>
+              <!-- Nút áp dụng mã -->
+              <!-- CSS: .btn-apply | JS: applyCoupon() -->
+              <button type="button" class="btn-apply" onclick="applyCoupon()">
+                Áp dụng
+              </button>
             </div>
+            <!-- Nút chọn mã ưu đãi có sẵn -->
+            <!-- CSS: .btn-browse-coupon | JS: openCouponModal() -->
+            <button
+              type="button"
+              class="btn-browse-coupon"
+              onclick="openCouponModal()"
+            >
+              🎁 Chọn mã ưu đãi có sẵn
+            </button>
+            <!-- Thông báo kết quả coupon (thành công / lỗi) -->
+            <!-- CSS: .coupon-result, .coupon-result.success, .coupon-result.error -->
+            <!-- JS: showCouponResult(msg, type) -->
+            <div class="coupon-result hidden" id="couponResult"></div>
+          </div>
 
-            <!-- Momo -->
-            <div class="payment-option" onclick="selectPayment('momo', this)">
-              <span class="payment-icon">🟣</span>
-              <span class="payment-name">MoMo</span>
+          <!-- Phương thức thanh toán -->
+          <!-- CSS: .payment-grid, .payment-option, .payment-option.selected -->
+          <!-- JS: selectPayment(method, el) -->
+          <div class="field-group">
+            <label class="field-label"
+              >Phương thức thanh toán <span class="required">*</span></label
+            >
+            <div class="payment-grid" id="paymentGrid">
+              <!-- Tiền mặt -->
+              <div class="payment-option" onclick="selectPayment('cash', this)">
+                <span class="payment-icon">💵</span>
+                <span class="payment-name">Tiền mặt</span>
+              </div>
+
+              <!-- Momo -->
+              <div class="payment-option" onclick="selectPayment('momo', this)">
+                <span class="payment-icon">🟣</span>
+                <span class="payment-name">MoMo</span>
+              </div>
+
+              <!-- ZaloPay -->
+              <div
+                class="payment-option"
+                onclick="selectPayment('zalopay', this)"
+              >
+                <span class="payment-icon">🔵</span>
+                <span class="payment-name">ZaloPay</span>
+              </div>
+
+              <!-- VNPAY -->
+              <div
+                class="payment-option"
+                onclick="selectPayment('vnpay', this)"
+              >
+                <span class="payment-icon">🇻🇳</span>
+                <span class="payment-name">VNPAY</span>
+              </div>
+
+              <!-- Thẻ ngân hàng -->
+              <div class="payment-option" onclick="selectPayment('bank', this)">
+                <span class="payment-icon">💳</span>
+                <span class="payment-name">Thẻ NH</span>
+              </div>
             </div>
+            <!-- Input ẩn lưu phương thức thanh toán đã chọn -->
+            <input
+              type="hidden"
+              id="paymentMethod"
+              name="paymentMethod"
+              required
+            />
+          </div>
 
-            <!-- ZaloPay -->
-            <div class="payment-option" onclick="selectPayment('zalopay', this)">
-              <span class="payment-icon">🔵</span>
-              <span class="payment-name">ZaloPay</span>
+          <!-- Bảng tổng kết giá trước khi đặt -->
+          <!-- CSS: .price-summary | JS: updatePriceSummary() -->
+          <div class="price-summary" id="priceSummary">
+            <div class="price-row">
+              <span>Phí lái hộ</span>
+              <span id="basePrice">--</span>
             </div>
-
-            <!-- VNPAY -->
-            <div class="payment-option" onclick="selectPayment('vnpay', this)">
-              <span class="payment-icon">🇻🇳</span>
-              <span class="payment-name">VNPAY</span>
+            <div class="price-row">
+              <span>Phụ phí xe sang</span>
+              <span id="surcharge">--</span>
             </div>
-
-            <!-- Thẻ ngân hàng -->
-            <div class="payment-option" onclick="selectPayment('bank', this)">
-              <span class="payment-icon">💳</span>
-              <span class="payment-name">Thẻ NH</span>
+            <div class="price-row discount-row hidden" id="discountRow">
+              <span>Giảm giá 🎉</span>
+              <span id="discountAmount" class="discount-value">--</span>
+            </div>
+            <div class="price-row total-row">
+              <span>Tổng cộng</span>
+              <span id="totalPrice" class="total-value">--</span>
             </div>
           </div>
-          <!-- Input ẩn lưu phương thức thanh toán đã chọn -->
-          <input type="hidden" id="paymentMethod" name="paymentMethod" required />
-        </div>
+        </section>
 
-        <!-- Bảng tổng kết giá trước khi đặt -->
-        <!-- CSS: .price-summary | JS: updatePriceSummary() -->
-        <div class="price-summary" id="priceSummary">
-          <div class="price-row">
-            <span>Phí lái hộ</span>
-            <span id="basePrice">--</span>
-          </div>
-          <div class="price-row">
-            <span>Phụ phí xe sang</span>
-            <span id="surcharge">--</span>
-          </div>
-          <div class="price-row discount-row hidden" id="discountRow">
-            <span>Giảm giá 🎉</span>
-            <span id="discountAmount" class="discount-value">--</span>
-          </div>
-          <div class="price-row total-row">
-            <span>Tổng cộng</span>
-            <span id="totalPrice" class="total-value">--</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ====================================================
+        <!-- ====================================================
         NÚT ĐẶT XE — CTA chính
         CSS: .btn-submit, .btn-submit:hover
         JS: handleFormSubmit(event)
       ==================================================== -->
-      <button type="submit" class="btn-submit" id="btnSubmit">
-        <span class="submit-icon">🍺</span>
-        <span class="submit-text">ĐẶT XE NGAY</span>
-        <span class="submit-arrow">→</span>
-      </button>
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          <span class="submit-icon">🍺</span>
+          <span class="submit-text">ĐẶT XE NGAY</span>
+          <span class="submit-arrow">→</span>
+        </button>
 
-      <!-- Thông báo điều khoản nhỏ -->
-      <!-- CSS: .terms-note -->
-      <p class="terms-note">
-        Bằng cách đặt xe, bạn đồng ý với
-        <a href="#" class="terms-link">Điều khoản dịch vụ</a>
-        và
-        <a href="#" class="terms-link">Chính sách bảo mật</a>
-        của chúng tôi.
-      </p>
-    </form>
-  </main>
+        <!-- Thông báo điều khoản nhỏ -->
+        <!-- CSS: .terms-note -->
+        <p class="terms-note">
+          Bằng cách đặt xe, bạn đồng ý với
+          <a href="#" class="terms-link">Điều khoản dịch vụ</a>
+          và
+          <a href="#" class="terms-link">Chính sách bảo mật</a>
+          của chúng tôi.
+        </p>
+      </form>
+    </main>
 
-  <!-- ====================================================
+    <!-- ====================================================
     MODAL: Danh sách mã ưu đãi
     CSS: .modal-overlay, .modal-box, .modal-box.open
     JS: openCouponModal(), closeCouponModal(), selectCouponFromList(code)
   ==================================================== -->
-  <div class="modal-overlay hidden" id="couponModal" onclick="closeCouponModal(event)">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title">🎁 Mã ưu đãi của bạn</h3>
-        <button type="button" class="modal-close" onclick="closeCouponModal()">✕</button>
+    <div
+      class="modal-overlay hidden"
+      id="couponModal"
+      onclick="closeCouponModal(event)"
+    >
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">🎁 Mã ưu đãi của bạn</h3>
+          <button
+            type="button"
+            class="modal-close"
+            onclick="closeCouponModal()"
+          >
+            ✕
+          </button>
+        </div>
+        <!-- Danh sách coupon — JS render vào đây qua renderCoupons() -->
+        <div class="coupon-list" id="couponList"></div>
       </div>
-      <!-- Danh sách coupon — JS render vào đây qua renderCoupons() -->
-      <div class="coupon-list" id="couponList"></div>
     </div>
-  </div>
 
-  <!-- ====================================================
+    <!-- ====================================================
     MODAL: Lưu địa điểm yêu thích
     CSS: .modal-overlay, .modal-box
     JS: openSavePlaceModal(), closeSavePlaceModal()
   ==================================================== -->
-  <div class="modal-overlay hidden" id="savePlaceModal" onclick="closeSavePlaceModal(event)">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title">📌 Lưu địa điểm yêu thích</h3>
-        <button type="button" class="modal-close" onclick="closeSavePlaceModal()">✕</button>
+    <div
+      class="modal-overlay hidden"
+      id="savePlaceModal"
+      onclick="closeSavePlaceModal(event)"
+    >
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">📌 Lưu địa điểm yêu thích</h3>
+          <button
+            type="button"
+            class="modal-close"
+            onclick="closeSavePlaceModal()"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="placeLabel">Tên gợi nhớ</label>
+          <input
+            type="text"
+            id="placeLabel"
+            class="text-input"
+            placeholder="Ví dụ: Nhà ông nội"
+          />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="placeAddress">Địa chỉ</label>
+          <input
+            type="text"
+            id="placeAddress"
+            class="text-input"
+            placeholder="Địa chỉ đầy đủ..."
+          />
+        </div>
+        <button
+          type="button"
+          class="btn-apply"
+          onclick="saveFavoritePlace()"
+          style="width: 100%; margin-top: 8px"
+        >
+          💾 Lưu địa điểm
+        </button>
       </div>
-      <div class="field-group">
-        <label class="field-label" for="placeLabel">Tên gợi nhớ</label>
-        <input type="text" id="placeLabel" class="text-input" placeholder="Ví dụ: Nhà ông nội" />
-      </div>
-      <div class="field-group">
-        <label class="field-label" for="placeAddress">Địa chỉ</label>
-        <input type="text" id="placeAddress" class="text-input" placeholder="Địa chỉ đầy đủ..." />
-      </div>
-      <button type="button" class="btn-apply" onclick="saveFavoritePlace()" style="width:100%;margin-top:8px;">
-        💾 Lưu địa điểm
-      </button>
     </div>
-  </div>
 
-  <!-- ====================================================
+    <!-- ====================================================
     MODAL: Thông báo đặt xe thành công
     CSS: .modal-overlay, .success-modal
     JS: showSuccessModal()
   ==================================================== -->
-  <div class="modal-overlay hidden" id="successModal">
-    <div class="modal-box success-modal">
-      <div class="success-anim">🎉</div>
-      <h3 class="success-title">Đặt xe thành công!</h3>
-      <p class="success-msg">Tài xế đang trên đường đến. Hãy ở yên một chỗ nhé! 🍺</p>
-      <div class="driver-eta" id="driverEta">
-        <span class="eta-icon">⏱</span>
-        <span id="etaText">Tài xế đến sau khoảng <strong>5–10 phút</strong></span>
+    <div class="modal-overlay hidden" id="successModal">
+      <div class="modal-box success-modal">
+        <div class="success-anim">🎉</div>
+        <h3 class="success-title">Đặt xe thành công!</h3>
+        <p class="success-msg">
+          Tài xế đang trên đường đến. Hãy ở yên một chỗ nhé! 🍺
+        </p>
+        <div class="driver-eta" id="driverEta">
+          <span class="eta-icon">⏱</span>
+          <span id="etaText"
+            >Tài xế đến sau khoảng <strong>5–10 phút</strong></span
+          >
+        </div>
+        <!-- Nút theo dõi tài xế -->
+        <button
+          type="button"
+          class="btn-submit"
+          onclick="startBookingFlow()"
+          style="margin-top: 24px"
+        >
+          📍 Theo dõi tài xế
+        </button>
+        <!-- Nút đặt lại -->
+        <button type="button" class="btn-secondary" onclick="resetForm()">
+          Đặt xe mới
+        </button>
       </div>
-      <!-- Nút theo dõi tài xế -->
-      <button type="button" class="btn-submit" onclick="trackDriver()" style="margin-top:24px;">
-        📍 Theo dõi tài xế
-      </button>
-      <!-- Nút đặt lại -->
-      <button type="button" class="btn-secondary" onclick="resetForm()">
-        Đặt xe mới
-      </button>
     </div>
-  </div>
 
-  <!-- Toast notification (hiển thị thông báo ngắn) -->
-  <!-- CSS: .toast, .toast.show | JS: showToast(msg, type) -->
-  <div class="toast hidden" id="toastNotify"></div>
+    <!-- Toast notification (hiển thị thông báo ngắn) -->
+    <!-- CSS: .toast, .toast.show | JS: showToast(msg, type) -->
+    <div class="toast hidden" id="toastNotify"></div>
 
-  <!-- File JS tách riêng — load cuối để DOM sẵn sàng -->
-  <script src="app.js"></script>
-</body>
+    <!-- Nút gọi tư vấn nhanh (luôn hiển thị góc dưới) -->
+    <a href="tel:0912345678" class="floating-call-btn">
+      <div class="call-icon">📞</div>
+      <span class="call-text">Gọi tư vấn</span>
+    </a>
+    <a
+      href="https://zalo.me/0912345678"
+      target="_blank"
+      class="floating-zalo-btn"
+    >
+      <img
+        src="data:image/jpeg;base64,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"
+        alt="Zalo Chat"
+        class="zalo-icon"
+      />
+      <span class="zalo-text">Chat Zalo</span>
+    </a>
+
+    <!-- Bảng giá tham khảo (luôn hiển thị góc trái) -->
+    <div class="left-pricing-column">
+      <div class="pricing-header">
+        <h3>💰 Bảng Giá Tham Khảo</h3>
+      </div>
+      <div class="pricing-body">
+        <div class="price-item">
+          <span class="vehicle-type">🛵 Xe máy</span>
+        </div>
+        <ul class="price-list">
+          <li><span>Dưới 5km:</span> <strong>50.000đ</strong></li>
+          <li><span>Từ 5 - 10km:</span> <strong>100.000đ</strong></li>
+          <li><span>Trên 10km:</span> <strong>15k/km</strong></li>
+        </ul>
+
+        <div class="price-item">
+          <span class="vehicle-type">🚗 Ô tô</span>
+        </div>
+        <ul class="price-list">
+          <li><span>Dưới 5km:</span> <strong>100.000đ</strong></li>
+          <li><span>Từ 5 - 10km:</span> <strong>200.000đ</strong></li>
+          <li><span>Trên 10km:</span> <strong>20k/km</strong></li>
+        </ul>
+
+        <div class="pricing-note">
+          <p><i>* Phụ phí 50.000đ sau 23:00</i></p>
+          <p>
+            <i
+              >* Giá trên chỉ mang tính tham khảo, giá thực tế sẽ hiển thị khi
+              chọn điểm đến.</i
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- theo dõi trạng thái tìm tài xế (ẩn mặc định, hiện khi bấm "Đặt xe") -->
+    <div id="tracking-screen" class="tracking-overlay" style="display: none">
+      <div id="finding-state" class="tracking-state">
+        <div class="radar-container">
+          <div class="radar-sweep"></div>
+          <div class="radar-dot"></div>
+        </div>
+        <h2 class="tracking-title">Đang tìm tài xế gần bạn...</h2>
+        <p class="tracking-desc">
+          Hệ thống đang kết nối với các tài xế quanh khu vực của bạn. Vui lòng
+          đợi trong giây lát.
+        </p>
+        <button class="btn-cancel" onclick="closeTracking()">
+          Hủy tìm kiếm
+        </button>
+      </div>
+
+      <div id="found-state" class="tracking-state" style="display: none">
+        <div class="map-container">
+          <div class="map-placeholder">
+            <div class="map-fake-bg"></div>
+            <div class="marker-driver">🚗</div>
+            <div class="marker-user">📍</div>
+          </div>
+        </div>
+
+        <div class="driver-info-card">
+          <div class="arrival-status">
+            Tài xế đang đến • <span class="text-orange">3 phút</span> (1.2 km)
+          </div>
+
+          <div class="driver-profile">
+            <img
+              src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=ff9800&color=fff&size=60"
+              alt="Avatar"
+              class="driver-avatar"
+            />
+            <div class="driver-details">
+              <h3>Nguyễn Văn A</h3>
+              <div class="vehicle-info">
+                <span class="plate">29H1 - 123.45</span>
+                <span class="dot">•</span>
+                <span class="type">Honda SH</span>
+              </div>
+              <div class="rating">⭐ 4.9 (120 chuyến)</div>
+            </div>
+          </div>
+
+          <div class="driver-actions">
+            <a href="tel:0987654321" class="btn-driver call">📞 Gọi điện</a>
+            <a href="#" class="btn-driver chat">💬 Nhắn tin</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+<!-- Modal quản lý tài khoản và lịch sử chuyến đi -->
+
+    <div class="modal-overlay hidden" id="accountModal">
+    <div class="modal-box account-modal">
+        <button class="close-btn" onclick="closeAccountModal()">✖</button>
+        
+        <div class="account-header">
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+                <div>
+                    <h3>Khách hàng VIP</h3>
+                    <p>0912.345.678</p>
+                </div>
+            </div>
+            <div class="points-box">
+                <span class="points-value">1,250</span>
+                <span class="points-label">🌟 Điểm thưởng</span>
+            </div>
+        </div>
+
+        <div class="section-title">🎁 Đổi ưu đãi</div>
+        <div class="rewards-list">
+            <div class="reward-item">
+                <div class="reward-info">
+                    <strong>Mã giảm 20.000đ</strong>
+                    <span>Cho chuyến đi tiếp theo</span>
+                </div>
+                <button class="btn-redeem">Đổi 500 điểm</button>
+            </div>
+        </div>
+
+        <div class="section-title">🕒 Lịch sử chuyến đi</div>
+        <div class="history-list">
+            <div class="history-item">
+                <div class="trip-route">
+                    <span class="dot-start"></span> Quán Nhậu 123 
+                    <br>
+                    <span class="dot-end"></span> Tòa nhà Landmark
+                </div>
+                <div class="trip-meta">12/05/2026 • Ô tô • Tài xế: Nguyễn Văn A</div>
+                <div class="trip-actions">
+                    <button class="btn-action rebook">🔄 Đặt lại tuyến này</button>
+                    <button class="btn-action invoice">📄 Tải hóa đơn</button>
+                </div>
+            </div>
+            <div class="history-item">
+                <div class="trip-route">
+                    <span class="dot-start"></span> Phố Đi Bộ 
+                    <br>
+                    <span class="dot-end"></span> Nhà riêng (Quận 7)
+                </div>
+                <div class="trip-meta">08/05/2026 • Xe máy • Tài xế: Trần Văn B</div>
+                <div class="trip-actions">
+                    <button class="btn-action rebook">🔄 Đặt lại tuyến này</button>
+                    <button class="btn-action invoice">📄 Tải hóa đơn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay hidden" id="ratingModal">
+    <div class="modal-box rating-modal">
+        <h3 class="rating-title">Chuyến đi thế nào?</h3>
+        <p class="rating-subtitle">Vui lòng đánh giá tài xế để chúng tôi cải thiện dịch vụ!</p>
+        
+        <div class="driver-rating-profile">
+            <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=ff9800&color=fff" alt="Driver">
+            <strong>Tài xế Nguyễn Văn A</strong>
+            <span>Biển số: 29H1-12345</span>
+        </div>
+
+        <div class="star-rating" id="starRating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+
+        <textarea class="rating-feedback" placeholder="Bạn có muốn để lại lời khen hoặc góp ý gì không? (Tùy chọn)"></textarea>
+        
+        <button class="btn-submit" onclick="submitRating()">Gửi Đánh Giá</button>
+        <button class="btn-secondary" style="margin-top: 10px;" onclick="closeRatingModal()">Bỏ qua</button>
+    </div>
+</div>
+
+    <!-- File JS tách riêng — load cuối để DOM sẵn sàng -->
+    <script src="app.js"></script>
+  </body>
 </html>
