@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bạn Say Tôi Đón 🍺</title>
+
+  <!-- Google Fonts: Bebas Neue (display) + Be Vietnam Pro (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Google Maps Places API (autocomplete) — key cần thay bằng key thật -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initAutocomplete" async defer></script>
+
+  <!-- File CSS tách riêng -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========================================================
+    SECTION: HEADER / BRANDING
+    CSS: .header, .logo, .logo-icon, .logo-text, .tagline
+    JS: Không có logic JS riêng cho phần này
+  ======================================================== -->
+  <header class="header">
+    <div class="logo">
+      <!-- Icon logo: emoji bia + tên thương hiệu -->
+      <span class="logo-icon">🍺</span>
+      <div class="logo-text">
+        <span class="brand-name">Bạn Say Tôi Đón</span>
+        <span class="tagline">Lái xe hộ — An toàn về nhà</span>
+      </div>
+    </div>
+    <!-- Nút đăng nhập / avatar nếu đã đăng nhập -->
+    <!-- CSS: .btn-login | JS: handleLogin() -->
+    <button class="btn-login" id="btnLogin" onclick="handleLogin()">
+      <span class="login-icon">👤</span>
+      <span class="login-text">Đăng nhập</span>
+    </button>
+  </header>
+
+  <!-- ========================================================
+    SECTION: MAIN FORM — Toàn bộ form đặt xe
+    CSS: .main-container, .form-card
+    JS: handleFormSubmit()
+  ======================================================== -->
+  <main class="main-container">
+
+    <!-- Tiêu đề form -->
+    <!-- CSS: .form-header, .form-title, .form-subtitle -->
+    <div class="form-header">
+      <h1 class="form-title">Đặt xe lái hộ</h1>
+      <p class="form-subtitle">Bạn cứ vui — chúng tôi lo phần còn lại 🚗</p>
+    </div>
+
+    <!-- Thanh tiến trình bước (Step indicator) -->
+    <!-- CSS: .steps-bar, .step, .step.active, .step.done -->
+    <!-- JS: updateStepBar(step) — cập nhật khi cuộn form -->
+    <div class="steps-bar">
+      <div class="step active" data-step="1">
+        <span class="step-num">1</span>
+        <span class="step-label">Lộ trình</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2">
+        <span class="step-num">2</span>
+        <span class="step-label">Xe của bạn</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3">
+        <span class="step-num">3</span>
+        <span class="step-label">Liên hệ</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="4">
+        <span class="step-num">4</span>
+        <span class="step-label">Thời gian</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="5">
+        <span class="step-num">5</span>
+        <span class="step-label">Thanh toán</span>
+      </div>
+    </div>
+
+    <form id="bookingForm" class="booking-form" onsubmit="handleFormSubmit(event)" novalidate>
+
+      <!-- ====================================================
+        PHẦN 1: THÔNG TIN LỘ TRÌNH (Quan trọng nhất)
+        CSS: .form-section, .section-label, .section-icon
+      ==================================================== -->
+      <section class="form-section" id="section-route" data-section="1">
+        <div class="section-header">
+          <!-- Icon + tiêu đề section -->
+          <!-- CSS: .section-icon, .section-title -->
+          <span class="section-icon">📍</span>
+          <h2 class="section-title">Thông tin lộ trình</h2>
+        </div>
+
+        <!-- Điểm đón -->
+        <!-- CSS: .field-group, .field-label, .input-wrapper, .input-icon -->
+        <!-- JS: initAutocomplete() khởi tạo Google Places cho input này -->
+        <div class="field-group">
+          <label class="field-label" for="pickupAddress">
+            Điểm đón hiện tại
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <!-- Input text — Google Places Autocomplete gắn vào id="pickupAddress" -->
+            <!-- CSS: .address-input | JS: google.maps.places.Autocomplete(el) -->
+            <input
+              type="text"
+              id="pickupAddress"
+              class="address-input"
+              placeholder="Nhập địa chỉ hoặc tên quán..."
+              autocomplete="off"
+              required
+            />
+            <span class="input-icon left-icon">🔍</span>
+
+            <!-- Nút định vị GPS — lấy tọa độ hiện tại của máy -->
+            <!-- CSS: .btn-gps | JS: getGPSLocation() -->
+            <button
+              type="button"
+              class="btn-gps"
+              id="btnGPS"
+              onclick="getGPSLocation()"
+              title="Tự động lấy vị trí của bạn"
+            >
+              <span class="gps-icon">🎯</span>
+              <span class="gps-text">Định vị tôi</span>
+            </button>
+          </div>
+          <!-- Spinner hiển thị khi đang lấy GPS -->
+          <!-- CSS: .gps-loading | JS: toggleGPSLoading(bool) -->
+          <div class="gps-loading hidden" id="gpsLoading">
+            <span class="spinner"></span>
+            Đang lấy vị trí...
+          </div>
+        </div>
+
+        <!-- Điểm đến -->
+        <!-- CSS: .field-group | JS: google.maps.places.Autocomplete(el) -->
+        <div class="field-group">
+          <label class="field-label" for="dropoffAddress">
+            Điểm đến
+            <span class="required">*</span>
+          </label>
+
+          <!-- Địa điểm yêu thích đã lưu (Quick select) -->
+          <!-- CSS: .quick-places, .quick-place-btn, .quick-place-btn.active -->
+          <!-- JS: selectFavoritePlace(type) — điền sẵn địa chỉ vào input -->
+          <div class="quick-places">
+            <span class="quick-label">Chọn nhanh:</span>
+            <button
+              type="button"
+              class="quick-place-btn"
+              id="btnHome"
+              onclick="selectFavoritePlace('home')"
+            >🏠 Về nhà</button>
+            <button
+              type="button"
+              class="quick-place-btn"
+              id="btnWork"
+              onclick="selectFavoritePlace('work')"
+            >🏢 Cơ quan</button>
+            <button
+              type="button"
+              class="quick-place-btn"
+              id="btnSavePlace"
+              onclick="openSavePlaceModal()"
+            >➕ Thêm</button>
+          </div>
+
+          <div class="input-wrapper">
+            <!-- Input điểm đến — Google Places Autocomplete -->
+            <input
+              type="text"
+              id="dropoffAddress"
+              class="address-input"
+              placeholder="Nhà riêng, khách sạn, cơ quan..."
+              autocomplete="off"
+              required
+            />
+            <span class="input-icon left-icon">🏁</span>
+          </div>
+        </div>
+
+        <!-- Bản đồ preview lộ trình (hiển thị sau khi chọn cả 2 địa điểm) -->
+        <!-- CSS: .map-preview, .map-preview.visible | JS: showRoutePreview() -->
+        <div class="map-preview hidden" id="mapPreview">
+          <div id="googleMap" class="google-map"></div>
+          <!-- Thông tin ước tính khoảng cách & giá -->
+          <!-- CSS: .route-info-bar | JS: updateRouteInfo(km, price) -->
+          <div class="route-info-bar" id="routeInfoBar">
+            <span class="route-stat">📏 <strong id="routeDistance">--</strong> km</span>
+            <span class="route-stat">⏱ <strong id="routeTime">--</strong> phút</span>
+            <span class="route-stat price-stat">💰 <strong id="routePrice">--</strong>đ</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+        PHẦN 2: THÔNG TIN XE CẦN LÁI HỘ
+        CSS: .form-section#section-vehicle
+      ==================================================== -->
+      <section class="form-section" id="section-vehicle" data-section="2">
+        <div class="section-header">
+          <span class="section-icon">🚗</span>
+          <h2 class="section-title">Xe của bạn</h2>
+        </div>
+
+        <!-- Chọn loại xe: hiển thị dạng icon card lớn -->
+        <!-- CSS: .vehicle-grid, .vehicle-card, .vehicle-card.selected -->
+        <!-- JS: selectVehicle(type, el) — thêm class selected -->
+        <div class="field-group">
+          <label class="field-label">Loại phương tiện <span class="required">*</span></label>
+          <div class="vehicle-grid" id="vehicleGrid">
+
+            <!-- Thẻ xe máy số sàn -->
+            <div class="vehicle-card" onclick="selectVehicle('motorbike-manual', this)">
+              <span class="vehicle-emoji">🛵</span>
+              <span class="vehicle-name">Xe máy</span>
+              <span class="vehicle-sub">Số sàn</span>
+            </div>
+
+            <!-- Thẻ xe ga -->
+            <div class="vehicle-card" onclick="selectVehicle('motorbike-auto', this)">
+              <span class="vehicle-emoji">🛵</span>
+              <span class="vehicle-name">Xe máy</span>
+              <span class="vehicle-sub">Xe ga</span>
+            </div>
+
+            <!-- Thẻ xe phân khối lớn -->
+            <div class="vehicle-card" onclick="selectVehicle('motorbike-big', this)">
+              <span class="vehicle-emoji">🏍️</span>
+              <span class="vehicle-name">Mô tô</span>
+              <span class="vehicle-sub">Phân khối lớn</span>
+            </div>
+
+            <!-- Thẻ ô tô số sàn -->
+            <div class="vehicle-card" onclick="selectVehicle('car-manual', this)">
+              <span class="vehicle-emoji">🚗</span>
+              <span class="vehicle-name">Ô tô</span>
+              <span class="vehicle-sub">Số sàn</span>
+            </div>
+
+            <!-- Thẻ ô tô số tự động -->
+            <div class="vehicle-card" onclick="selectVehicle('car-auto', this)">
+              <span class="vehicle-emoji">🚙</span>
+              <span class="vehicle-name">Ô tô</span>
+              <span class="vehicle-sub">Số tự động</span>
+            </div>
+
+            <!-- Thẻ xe sang cao cấp -->
+            <div class="vehicle-card premium" onclick="selectVehicle('car-luxury', this)">
+              <span class="vehicle-emoji">🏎️</span>
+              <span class="vehicle-name">Xe sang</span>
+              <span class="vehicle-sub">Cao cấp</span>
+              <!-- Badge đặc biệt -->
+              <!-- CSS: .premium-badge -->
+              <span class="premium-badge">VIP</span>
+            </div>
+          </div>
+          <!-- Input ẩn lưu giá trị loại xe đã chọn -->
+          <!-- JS: selectVehicle() ghi vào đây -->
+          <input type="hidden" id="vehicleType" name="vehicleType" required />
+        </div>
+
+        <!-- Biển số xe / Đặc điểm nhận dạng -->
+        <!-- CSS: .field-group | JS: validatePlate() -->
+        <div class="field-group">
+          <label class="field-label" for="vehiclePlate">
+            Biển số xe / Đặc điểm nhận dạng
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="vehiclePlate"
+              class="text-input"
+              placeholder="Ví dụ: 30A-12345 hoặc Xe SH màu đen"
+              required
+            />
+            <span class="input-icon left-icon">🔖</span>
+          </div>
+          <!-- Gợi ý nhỏ bên dưới ô nhập -->
+          <!-- CSS: .field-hint -->
+          <p class="field-hint">Giúp tài xế dễ tìm thấy xe của bạn tại điểm đón 🔍</p>
+        </div>
+      </section>
+
+      <!-- ====================================================
+        PHẦN 3: THÔNG TIN LIÊN HỆ
+        CSS: .form-section#section-contact
+      ==================================================== -->
+      <section class="form-section" id="section-contact" data-section="3">
+        <div class="section-header">
+          <span class="section-icon">📞</span>
+          <h2 class="section-title">Thông tin liên hệ</h2>
+        </div>
+
+        <!-- Số điện thoại người đi -->
+        <!-- CSS: .field-group | JS: prefillPhone() — tự điền nếu đã đăng nhập -->
+        <div class="field-group">
+          <label class="field-label" for="phoneNumber">
+            Số điện thoại người đi
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <!-- prefix +84 -->
+            <span class="phone-prefix">🇻🇳 +84</span>
+            <input
+              type="tel"
+              id="phoneNumber"
+              class="text-input phone-input"
+              placeholder="0912 345 678"
+              maxlength="11"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Checkbox: Đặt hộ người khác -->
+        <!-- CSS: .toggle-row, .custom-checkbox | JS: toggleBookForOther() -->
+        <div class="field-group">
+          <label class="toggle-row" for="bookForOther">
+            <input
+              type="checkbox"
+              id="bookForOther"
+              class="custom-checkbox"
+              onchange="toggleBookForOther(this.checked)"
+            />
+            <span class="toggle-label">Đặt hộ người khác</span>
+            <span class="toggle-hint">(Người thân, bạn bè)</span>
+          </label>
+        </div>
+
+        <!-- Ô nhập thêm khi tick "Đặt hộ người khác" -->
+        <!-- CSS: .other-person-fields, .other-person-fields.visible -->
+        <!-- JS: toggleBookForOther() toggle class visible -->
+        <div class="other-person-fields hidden" id="otherPersonFields">
+          <!-- Tên người đi -->
+          <div class="field-group">
+            <label class="field-label" for="otherName">Tên người đi</label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="otherName"
+                class="text-input"
+                placeholder="Nguyễn Văn A"
+              />
+              <span class="input-icon left-icon">👤</span>
+            </div>
+          </div>
+          <!-- Số điện thoại người đi (người được đặt hộ) -->
+          <div class="field-group">
+            <label class="field-label" for="otherPhone">Số điện thoại người đi</label>
+            <div class="input-wrapper">
+              <span class="phone-prefix">🇻🇳 +84</span>
+              <input
+                type="tel"
+                id="otherPhone"
+                class="text-input phone-input"
+                placeholder="0912 345 678"
+                maxlength="11"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+        PHẦN 4: THỜI GIAN & GHI CHÚ
+        CSS: .form-section#section-time
+      ==================================================== -->
+      <section class="form-section" id="section-time" data-section="4">
+        <div class="section-header">
+          <span class="section-icon">⏰</span>
+          <h2 class="section-title">Thời gian & Ghi chú</h2>
+        </div>
+
+        <!-- Chọn thời gian đón -->
+        <!-- CSS: .time-tabs, .time-tab, .time-tab.active -->
+        <!-- JS: switchTimeMode(mode) — toggle giữa "ngay bây giờ" và "đặt lịch" -->
+        <div class="field-group">
+          <label class="field-label">Thời gian đón</label>
+          <div class="time-tabs">
+            <!-- Tab "Đón ngay" — mặc định active -->
+            <button
+              type="button"
+              class="time-tab active"
+              id="tabNow"
+              onclick="switchTimeMode('now')"
+            >⚡ Đón ngay bây giờ</button>
+
+            <!-- Tab "Đặt lịch trước" -->
+            <button
+              type="button"
+              class="time-tab"
+              id="tabSchedule"
+              onclick="switchTimeMode('schedule')"
+            >📅 Đặt lịch trước</button>
+          </div>
+
+          <!-- Ô chọn ngày/giờ — chỉ hiện khi chọn "Đặt lịch trước" -->
+          <!-- CSS: .schedule-picker, .schedule-picker.visible -->
+          <!-- JS: switchTimeMode('schedule') toggle class visible -->
+          <div class="schedule-picker hidden" id="schedulePicker">
+            <div class="input-wrapper">
+              <input
+                type="datetime-local"
+                id="scheduledTime"
+                class="text-input datetime-input"
+              />
+              <span class="input-icon left-icon">🗓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ghi chú cho tài xế -->
+        <!-- CSS: .field-group, .quick-notes, .quick-note-btn -->
+        <!-- JS: toggleQuickNote(btn, text) — toggle ghi chú nhanh vào textarea -->
+        <div class="field-group">
+          <label class="field-label" for="driverNote">Ghi chú cho tài xế</label>
+
+          <!-- Nút ghi chú nhanh -->
+          <div class="quick-notes" id="quickNotes">
+            <button
+              type="button"
+              class="quick-note-btn"
+              onclick="toggleQuickNote(this, 'Tôi đang ở trong quán')"
+            >🏮 Tôi đang ở trong quán</button>
+
+            <button
+              type="button"
+              class="quick-note-btn"
+              onclick="toggleQuickNote(this, 'Xe gửi ở hầm giữ xe')"
+            >🅿️ Xe gửi ở hầm giữ xe</button>
+
+            <button
+              type="button"
+              class="quick-note-btn"
+              onclick="toggleQuickNote(this, 'Đang say xỉn cần hỗ trợ lên xe')"
+            >🥴 Cần hỗ trợ lên xe</button>
+
+            <button
+              type="button"
+              class="quick-note-btn"
+              onclick="toggleQuickNote(this, 'Có mang theo thú cưng')"
+            >🐾 Có thú cưng</button>
+          </div>
+
+          <!-- Textarea ghi chú tự do -->
+          <!-- CSS: .note-textarea | JS: toggleQuickNote() ghi nội dung vào đây -->
+          <textarea
+            id="driverNote"
+            class="note-textarea"
+            rows="3"
+            placeholder="Hoặc gõ ghi chú thêm cho tài xế..."
+          ></textarea>
+        </div>
+      </section>
+
+      <!-- ====================================================
+        PHẦN 5: THANH TOÁN & ƯU ĐÃI
+        CSS: .form-section#section-payment
+      ==================================================== -->
+      <section class="form-section" id="section-payment" data-section="5">
+        <div class="section-header">
+          <span class="section-icon">💳</span>
+          <h2 class="section-title">Thanh toán & Ưu đãi</h2>
+        </div>
+
+        <!-- Mã giảm giá -->
+        <!-- CSS: .coupon-row | JS: applyCoupon() -->
+        <div class="field-group">
+          <label class="field-label" for="couponCode">Mã giảm giá</label>
+          <div class="coupon-row">
+            <div class="input-wrapper coupon-input-wrap">
+              <input
+                type="text"
+                id="couponCode"
+                class="text-input"
+                placeholder="Nhập mã ưu đãi..."
+                style="text-transform: uppercase;"
+              />
+              <span class="input-icon left-icon">🎟</span>
+            </div>
+            <!-- Nút áp dụng mã -->
+            <!-- CSS: .btn-apply | JS: applyCoupon() -->
+            <button type="button" class="btn-apply" onclick="applyCoupon()">Áp dụng</button>
+          </div>
+          <!-- Nút chọn mã ưu đãi có sẵn -->
+          <!-- CSS: .btn-browse-coupon | JS: openCouponModal() -->
+          <button type="button" class="btn-browse-coupon" onclick="openCouponModal()">
+            🎁 Chọn mã ưu đãi có sẵn
+          </button>
+          <!-- Thông báo kết quả coupon (thành công / lỗi) -->
+          <!-- CSS: .coupon-result, .coupon-result.success, .coupon-result.error -->
+          <!-- JS: showCouponResult(msg, type) -->
+          <div class="coupon-result hidden" id="couponResult"></div>
+        </div>
+
+        <!-- Phương thức thanh toán -->
+        <!-- CSS: .payment-grid, .payment-option, .payment-option.selected -->
+        <!-- JS: selectPayment(method, el) -->
+        <div class="field-group">
+          <label class="field-label">Phương thức thanh toán <span class="required">*</span></label>
+          <div class="payment-grid" id="paymentGrid">
+
+            <!-- Tiền mặt -->
+            <div class="payment-option" onclick="selectPayment('cash', this)">
+              <span class="payment-icon">💵</span>
+              <span class="payment-name">Tiền mặt</span>
+            </div>
+
+            <!-- Momo -->
+            <div class="payment-option" onclick="selectPayment('momo', this)">
+              <span class="payment-icon">🟣</span>
+              <span class="payment-name">MoMo</span>
+            </div>
+
+            <!-- ZaloPay -->
+            <div class="payment-option" onclick="selectPayment('zalopay', this)">
+              <span class="payment-icon">🔵</span>
+              <span class="payment-name">ZaloPay</span>
+            </div>
+
+            <!-- VNPAY -->
+            <div class="payment-option" onclick="selectPayment('vnpay', this)">
+              <span class="payment-icon">🇻🇳</span>
+              <span class="payment-name">VNPAY</span>
+            </div>
+
+            <!-- Thẻ ngân hàng -->
+            <div class="payment-option" onclick="selectPayment('bank', this)">
+              <span class="payment-icon">💳</span>
+              <span class="payment-name">Thẻ NH</span>
+            </div>
+          </div>
+          <!-- Input ẩn lưu phương thức thanh toán đã chọn -->
+          <input type="hidden" id="paymentMethod" name="paymentMethod" required />
+        </div>
+
+        <!-- Bảng tổng kết giá trước khi đặt -->
+        <!-- CSS: .price-summary | JS: updatePriceSummary() -->
+        <div class="price-summary" id="priceSummary">
+          <div class="price-row">
+            <span>Phí lái hộ</span>
+            <span id="basePrice">--</span>
+          </div>
+          <div class="price-row">
+            <span>Phụ phí xe sang</span>
+            <span id="surcharge">--</span>
+          </div>
+          <div class="price-row discount-row hidden" id="discountRow">
+            <span>Giảm giá 🎉</span>
+            <span id="discountAmount" class="discount-value">--</span>
+          </div>
+          <div class="price-row total-row">
+            <span>Tổng cộng</span>
+            <span id="totalPrice" class="total-value">--</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+        NÚT ĐẶT XE — CTA chính
+        CSS: .btn-submit, .btn-submit:hover
+        JS: handleFormSubmit(event)
+      ==================================================== -->
+      <button type="submit" class="btn-submit" id="btnSubmit">
+        <span class="submit-icon">🍺</span>
+        <span class="submit-text">ĐẶT XE NGAY</span>
+        <span class="submit-arrow">→</span>
+      </button>
+
+      <!-- Thông báo điều khoản nhỏ -->
+      <!-- CSS: .terms-note -->
+      <p class="terms-note">
+        Bằng cách đặt xe, bạn đồng ý với
+        <a href="#" class="terms-link">Điều khoản dịch vụ</a>
+        và
+        <a href="#" class="terms-link">Chính sách bảo mật</a>
+        của chúng tôi.
+      </p>
+    </form>
+  </main>
+
+  <!-- ====================================================
+    MODAL: Danh sách mã ưu đãi
+    CSS: .modal-overlay, .modal-box, .modal-box.open
+    JS: openCouponModal(), closeCouponModal(), selectCouponFromList(code)
+  ==================================================== -->
+  <div class="modal-overlay hidden" id="couponModal" onclick="closeCouponModal(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🎁 Mã ưu đãi của bạn</h3>
+        <button type="button" class="modal-close" onclick="closeCouponModal()">✕</button>
+      </div>
+      <!-- Danh sách coupon — JS render vào đây qua renderCoupons() -->
+      <div class="coupon-list" id="couponList"></div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+    MODAL: Lưu địa điểm yêu thích
+    CSS: .modal-overlay, .modal-box
+    JS: openSavePlaceModal(), closeSavePlaceModal()
+  ==================================================== -->
+  <div class="modal-overlay hidden" id="savePlaceModal" onclick="closeSavePlaceModal(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">📌 Lưu địa điểm yêu thích</h3>
+        <button type="button" class="modal-close" onclick="closeSavePlaceModal()">✕</button>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="placeLabel">Tên gợi nhớ</label>
+        <input type="text" id="placeLabel" class="text-input" placeholder="Ví dụ: Nhà ông nội" />
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="placeAddress">Địa chỉ</label>
+        <input type="text" id="placeAddress" class="text-input" placeholder="Địa chỉ đầy đủ..." />
+      </div>
+      <button type="button" class="btn-apply" onclick="saveFavoritePlace()" style="width:100%;margin-top:8px;">
+        💾 Lưu địa điểm
+      </button>
+    </div>
+  </div>
+
+  <!-- ====================================================
+    MODAL: Thông báo đặt xe thành công
+    CSS: .modal-overlay, .success-modal
+    JS: showSuccessModal()
+  ==================================================== -->
+  <div class="modal-overlay hidden" id="successModal">
+    <div class="modal-box success-modal">
+      <div class="success-anim">🎉</div>
+      <h3 class="success-title">Đặt xe thành công!</h3>
+      <p class="success-msg">Tài xế đang trên đường đến. Hãy ở yên một chỗ nhé! 🍺</p>
+      <div class="driver-eta" id="driverEta">
+        <span class="eta-icon">⏱</span>
+        <span id="etaText">Tài xế đến sau khoảng <strong>5–10 phút</strong></span>
+      </div>
+      <!-- Nút theo dõi tài xế -->
+      <button type="button" class="btn-submit" onclick="trackDriver()" style="margin-top:24px;">
+        📍 Theo dõi tài xế
+      </button>
+      <!-- Nút đặt lại -->
+      <button type="button" class="btn-secondary" onclick="resetForm()">
+        Đặt xe mới
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast notification (hiển thị thông báo ngắn) -->
+  <!-- CSS: .toast, .toast.show | JS: showToast(msg, type) -->
+  <div class="toast hidden" id="toastNotify"></div>
+
+  <!-- File JS tách riêng — load cuối để DOM sẵn sàng -->
+  <script src="app.js"></script>
+</body>
+</html>

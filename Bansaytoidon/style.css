@@ -1,0 +1,1403 @@
+/* ================================================================
+   style.css — Bạn Say Tôi Đón
+   Aesthetic: Night City / Phố đêm Hà Nội
+   Palette: Deep navy + Warm amber/orange neon + Cream white
+   Font: Bebas Neue (display) + Be Vietnam Pro (body)
+================================================================ */
+
+/* ----------------------------------------------------------------
+   CSS VARIABLES — Toàn bộ màu sắc, font, spacing dùng ở đây
+   Tham chiếu: var(--ten-bien) ở mọi nơi bên dưới
+---------------------------------------------------------------- */
+:root {
+  /* Màu nền chính — navy đêm */
+  --bg-dark:        #0d0f18;
+  --bg-card:        #13162a;
+  --bg-section:     #181c32;
+  --bg-input:       #0f1221;
+  --bg-hover:       #1e2340;
+
+  /* Màu neon chủ đạo — amber/cam ấm như đèn đường đêm */
+  --accent:         #f5a623;
+  --accent-hot:     #ff6b2b;
+  --accent-glow:    rgba(245, 166, 35, 0.25);
+  --accent-soft:    rgba(245, 166, 35, 0.12);
+
+  /* Màu chữ */
+  --text-primary:   #f0ece3;
+  --text-secondary: #9a96b0;
+  --text-muted:     #5a566e;
+  --text-accent:    #f5a623;
+
+  /* Border */
+  --border:         rgba(255,255,255,0.08);
+  --border-accent:  rgba(245, 166, 35, 0.4);
+  --border-focus:   #f5a623;
+
+  /* Màu trạng thái */
+  --success:        #3ecf7a;
+  --error:          #ff4d6d;
+  --info:           #4da6ff;
+
+  /* Kích thước */
+  --radius-sm:      8px;
+  --radius-md:      14px;
+  --radius-lg:      20px;
+  --radius-xl:      28px;
+
+  /* Bóng */
+  --shadow-card:    0 8px 40px rgba(0,0,0,0.5);
+  --shadow-glow:    0 0 24px rgba(245, 166, 35, 0.3);
+  --shadow-input:   0 2px 8px rgba(0,0,0,0.3);
+
+  /* Transition chung */
+  --ease:           cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth:    cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Font */
+  --font-display:   'Bebas Neue', sans-serif;
+  --font-body:      'Be Vietnam Pro', sans-serif;
+}
+
+/* ----------------------------------------------------------------
+   RESET & BASE
+---------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* body — nền gradient đêm + noise texture bằng SVG data URI */
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-dark);
+  /* Gradient lớp nền + noise texture giả */
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(245,166,35,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(255,107,43,0.05) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ----------------------------------------------------------------
+   HEADER
+   HTML: <header class="header">
+---------------------------------------------------------------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: rgba(13, 15, 24, 0.85);
+  /* Kính mờ blur */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Logo wrapper */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icon emoji bia — bounce nhẹ khi hover */
+.logo-icon {
+  font-size: 28px;
+  display: inline-block;
+  transition: transform 0.3s var(--ease);
+}
+.logo:hover .logo-icon {
+  transform: rotate(-15deg) scale(1.15);
+}
+
+/* Text logo */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tên thương hiệu — dùng Bebas Neue */
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* Tagline nhỏ bên dưới tên brand */
+.tagline {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+/* Nút đăng nhập góc phải header */
+.btn-login {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-smooth);
+}
+.btn-login:hover {
+  background: var(--accent-glow);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+/* ----------------------------------------------------------------
+   MAIN CONTAINER
+   HTML: <main class="main-container">
+---------------------------------------------------------------- */
+.main-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
+}
+
+/* ----------------------------------------------------------------
+   FORM HEADER — Tiêu đề trên cùng form
+   HTML: <div class="form-header">
+---------------------------------------------------------------- */
+.form-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* Tiêu đề lớn — dùng Bebas Neue */
+.form-title {
+  font-family: var(--font-display);
+  font-size: 52px;
+  letter-spacing: 3px;
+  color: var(--text-primary);
+  line-height: 1;
+  /* Gradient chữ */
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtitle nhỏ */
+.form-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  font-weight: 400;
+}
+
+/* ----------------------------------------------------------------
+   STEPS BAR — Thanh tiến trình bước
+   HTML: <div class="steps-bar">
+   JS: updateStepBar()
+---------------------------------------------------------------- */
+.steps-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 32px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  /* Ẩn thanh scroll ngang */
+  scrollbar-width: none;
+}
+.steps-bar::-webkit-scrollbar { display: none; }
+
+/* Một bước trong thanh */
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* Số thứ tự bước */
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-section);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.3s var(--ease-smooth);
+}
+
+/* Nhãn bước */
+.step-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+/* Trạng thái active */
+.step.active .step-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  box-shadow: 0 0 16px rgba(245,166,35,0.5);
+}
+.step.active .step-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Trạng thái done */
+.step.done .step-num {
+  background: var(--success);
+  border-color: var(--success);
+  color: #000;
+}
+.step.done .step-label {
+  color: var(--success);
+}
+
+/* Đường kẻ nối giữa các bước */
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  min-width: 20px;
+  max-width: 50px;
+  margin-bottom: 16px;
+  transition: background 0.3s;
+}
+
+/* ----------------------------------------------------------------
+   FORM SECTION — Mỗi phần trong form
+   HTML: <section class="form-section">
+---------------------------------------------------------------- */
+.form-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+  /* Animation fade-in khi load */
+  animation: fadeSlideUp 0.4s var(--ease-smooth) both;
+}
+.form-section:nth-child(1) { animation-delay: 0.05s; }
+.form-section:nth-child(2) { animation-delay: 0.10s; }
+.form-section:nth-child(3) { animation-delay: 0.15s; }
+.form-section:nth-child(4) { animation-delay: 0.20s; }
+.form-section:nth-child(5) { animation-delay: 0.25s; }
+
+/* Header của mỗi section */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Icon section */
+.section-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Tiêu đề section */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+}
+
+/* ----------------------------------------------------------------
+   FIELD GROUP — Nhóm label + input
+   HTML: <div class="field-group">
+---------------------------------------------------------------- */
+.field-group {
+  margin-bottom: 18px;
+}
+.field-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Label của field */
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* Dấu * bắt buộc */
+.required {
+  color: var(--accent-hot);
+  margin-left: 3px;
+}
+
+/* Gợi ý nhỏ bên dưới field */
+.field-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* ----------------------------------------------------------------
+   INPUT WRAPPER — Bao quanh input + icon
+   HTML: <div class="input-wrapper">
+---------------------------------------------------------------- */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Icon trong input (bên trái) */
+.input-icon {
+  position: absolute;
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+.left-icon {
+  left: 12px;
+}
+
+/* ----------------------------------------------------------------
+   ADDRESS INPUT — Ô nhập địa chỉ có Google Autocomplete
+   HTML: <input class="address-input">
+   JS: initAutocomplete() gắn Google Places vào đây
+---------------------------------------------------------------- */
+.address-input,
+.text-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 13px 16px 13px 40px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s var(--ease-smooth);
+  box-shadow: var(--shadow-input);
+}
+
+.address-input:focus,
+.text-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow-input);
+  background: var(--bg-hover);
+}
+
+.address-input::placeholder,
+.text-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ----------------------------------------------------------------
+   GPS BUTTON — Nút định vị vị trí
+   HTML: <button class="btn-gps">
+   JS: getGPSLocation()
+---------------------------------------------------------------- */
+.btn-gps {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-smooth);
+  white-space: nowrap;
+}
+.btn-gps:hover {
+  background: var(--accent-glow);
+  box-shadow: 0 0 12px rgba(245,166,35,0.3);
+  transform: scale(1.03);
+}
+.btn-gps:active {
+  transform: scale(0.98);
+}
+
+.gps-icon { font-size: 14px; }
+.gps-text { font-size: 11px; }
+
+/* GPS loading spinner */
+.gps-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--accent);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* ----------------------------------------------------------------
+   QUICK PLACES — Nút chọn địa điểm yêu thích nhanh
+   HTML: <div class="quick-places">
+   JS: selectFavoritePlace()
+---------------------------------------------------------------- */
+.quick-places {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.quick-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Nút địa điểm yêu thích */
+.quick-place-btn {
+  padding: 6px 12px;
+  background: var(--bg-section);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-smooth);
+  white-space: nowrap;
+}
+.quick-place-btn:hover {
+  border-color: var(--border-accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Trạng thái đã chọn */
+.quick-place-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ----------------------------------------------------------------
+   MAP PREVIEW — Preview lộ trình trên Google Maps
+   HTML: <div class="map-preview">
+   JS: showRoutePreview()
+---------------------------------------------------------------- */
+.map-preview {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-accent);
+  margin-top: 16px;
+  animation: fadeIn 0.4s var(--ease-smooth);
+}
+
+/* Container của bản đồ Google Maps thực */
+.google-map {
+  width: 100%;
+  height: 200px;
+  background: var(--bg-section);
+}
+
+/* Thanh thông tin lộ trình: khoảng cách, thời gian, giá */
+.route-info-bar {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  background: var(--bg-section);
+  border-top: 1px solid var(--border);
+}
+
+.route-stat {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.route-stat strong {
+  color: var(--text-primary);
+}
+.price-stat strong {
+  color: var(--accent);
+  font-size: 15px;
+}
+
+/* ----------------------------------------------------------------
+   VEHICLE GRID — Lưới chọn loại xe dạng icon card lớn
+   HTML: <div class="vehicle-grid">
+   JS: selectVehicle()
+---------------------------------------------------------------- */
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* Thẻ một loại xe */
+.vehicle-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 16px 10px;
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  text-align: center;
+  user-select: none;
+}
+.vehicle-card:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+}
+
+/* Trạng thái đã chọn */
+.vehicle-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 20px var(--accent-glow);
+  transform: scale(1.03);
+}
+.vehicle-card.selected .vehicle-name {
+  color: var(--accent);
+}
+
+/* Emoji xe */
+.vehicle-emoji {
+  font-size: 28px;
+  line-height: 1;
+  display: block;
+  transition: transform 0.3s var(--ease);
+}
+.vehicle-card:hover .vehicle-emoji,
+.vehicle-card.selected .vehicle-emoji {
+  transform: scale(1.1);
+}
+
+/* Tên xe */
+.vehicle-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Sub-label (số sàn, xe ga...) */
+.vehicle-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Badge VIP cho xe sang */
+.premium-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hot));
+  color: #000;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* ----------------------------------------------------------------
+   PHONE INPUT — Ô nhập số điện thoại có prefix quốc gia
+   HTML: <span class="phone-prefix"> + <input class="phone-input">
+---------------------------------------------------------------- */
+.phone-prefix {
+  position: absolute;
+  left: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.phone-input {
+  padding-left: 76px !important;
+}
+
+/* ----------------------------------------------------------------
+   TOGGLE ROW — Hàng checkbox toggle (Đặt hộ người khác)
+   HTML: <label class="toggle-row">
+   JS: toggleBookForOther()
+---------------------------------------------------------------- */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  transition: all 0.2s var(--ease-smooth);
+}
+.toggle-row:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-hover);
+}
+
+/* Checkbox ẩn gốc */
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-section);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s var(--ease-smooth);
+}
+
+/* Dấu tick khi checked */
+.custom-checkbox:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.custom-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.toggle-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.toggle-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Fields ẩn/hiện khi tick "Đặt hộ người khác" */
+.other-person-fields {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--bg-section);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-accent);
+  /* Slide-down animation */
+  overflow: hidden;
+  transition: max-height 0.35s var(--ease-smooth), opacity 0.3s;
+}
+
+/* ----------------------------------------------------------------
+   TIME TABS — Nút chọn "Ngay bây giờ" / "Đặt lịch"
+   HTML: <div class="time-tabs">
+   JS: switchTimeMode()
+---------------------------------------------------------------- */
+.time-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* Một tab thời gian */
+.time-tab {
+  flex: 1;
+  padding: 12px;
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-smooth);
+  text-align: center;
+}
+.time-tab:hover {
+  border-color: var(--border-accent);
+  color: var(--text-primary);
+}
+
+/* Tab đang active */
+.time-tab.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Ô chọn ngày/giờ — ẩn khi mode = 'now' */
+.schedule-picker {
+  overflow: hidden;
+  transition: max-height 0.3s var(--ease-smooth);
+}
+
+/* datetime-local input */
+.datetime-input {
+  color-scheme: dark;
+}
+
+/* ----------------------------------------------------------------
+   QUICK NOTES — Nút ghi chú nhanh cho tài xế
+   HTML: <div class="quick-notes">
+   JS: toggleQuickNote()
+---------------------------------------------------------------- */
+.quick-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* Nút ghi chú nhanh */
+.quick-note-btn {
+  padding: 8px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-smooth);
+}
+.quick-note-btn:hover {
+  border-color: var(--border-accent);
+  color: var(--text-primary);
+}
+
+/* Trạng thái đã chọn */
+.quick-note-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Textarea ghi chú tự do */
+.note-textarea {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+  transition: all 0.2s var(--ease-smooth);
+  min-height: 80px;
+}
+.note-textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.note-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ----------------------------------------------------------------
+   COUPON — Mã giảm giá
+   HTML: .coupon-row
+   JS: applyCoupon(), openCouponModal()
+---------------------------------------------------------------- */
+.coupon-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.coupon-input-wrap {
+  flex: 1;
+}
+
+/* Nút áp dụng mã */
+.btn-apply {
+  padding: 0 18px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-md);
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+}
+.btn-apply:hover {
+  background: var(--accent-hot);
+  box-shadow: var(--shadow-glow);
+  transform: scale(1.04);
+}
+
+/* Nút duyệt danh sách coupon */
+.btn-browse-coupon {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed var(--border-accent);
+  border-radius: var(--radius-md);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-smooth);
+}
+.btn-browse-coupon:hover {
+  background: var(--accent-soft);
+}
+
+/* Thông báo kết quả coupon */
+.coupon-result {
+  margin-top: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+.coupon-result.success {
+  background: rgba(62,207,122,0.12);
+  border: 1px solid rgba(62,207,122,0.4);
+  color: var(--success);
+}
+.coupon-result.error {
+  background: rgba(255,77,109,0.12);
+  border: 1px solid rgba(255,77,109,0.4);
+  color: var(--error);
+}
+
+/* ----------------------------------------------------------------
+   PAYMENT GRID — Lưới phương thức thanh toán
+   HTML: <div class="payment-grid">
+   JS: selectPayment()
+---------------------------------------------------------------- */
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+/* Một phương thức thanh toán */
+.payment-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  text-align: center;
+}
+.payment-option:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+}
+.payment-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.payment-icon { font-size: 22px; }
+.payment-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.payment-option.selected .payment-name {
+  color: var(--accent);
+}
+
+/* ----------------------------------------------------------------
+   PRICE SUMMARY — Bảng tổng kết giá
+   HTML: <div class="price-summary">
+   JS: updatePriceSummary()
+---------------------------------------------------------------- */
+.price-summary {
+  margin-top: 18px;
+  padding: 16px;
+  background: var(--bg-section);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+.price-row:last-child {
+  border-bottom: none;
+}
+
+.discount-value {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.total-row {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding-top: 12px;
+}
+
+.total-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+/* ----------------------------------------------------------------
+   SUBMIT BUTTON — Nút đặt xe chính
+   HTML: <button class="btn-submit">
+   JS: handleFormSubmit()
+---------------------------------------------------------------- */
+.btn-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hot) 100%);
+  border: none;
+  border-radius: var(--radius-lg);
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  box-shadow: 0 4px 24px rgba(245,166,35,0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shine effect khi hover */
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.5s ease;
+}
+.btn-submit:hover::before {
+  left: 150%;
+}
+
+.btn-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(245,166,35,0.5);
+}
+.btn-submit:active {
+  transform: translateY(-1px);
+}
+
+.submit-icon { font-size: 22px; }
+.submit-arrow {
+  font-size: 20px;
+  transition: transform 0.3s var(--ease);
+}
+.btn-submit:hover .submit-arrow {
+  transform: translateX(4px);
+}
+
+/* Nút phụ (Đặt xe mới...) */
+.btn-secondary {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover {
+  border-color: var(--border-accent);
+  color: var(--text-primary);
+}
+
+/* Terms note */
+.terms-note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 14px;
+  line-height: 1.6;
+}
+.terms-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------------------
+   MODAL OVERLAY — Nền tối của modal
+   HTML: <div class="modal-overlay">
+   JS: openCouponModal(), closeCouponModal()...
+---------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 16px 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Hộp modal nội dung */
+.modal-box {
+  width: 100%;
+  max-width: 500px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl) var(--radius-xl) var(--radius-md) var(--radius-md);
+  padding: 24px;
+  box-shadow: 0 -8px 50px rgba(0,0,0,0.6);
+  animation: slideUp 0.3s var(--ease);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Header modal */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--text-primary); }
+
+/* Danh sách coupon trong modal */
+.coupon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Một item coupon */
+.coupon-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--bg-section);
+  border: 1px dashed var(--border-accent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.coupon-item:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.coupon-code {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.coupon-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ----------------------------------------------------------------
+   SUCCESS MODAL
+   HTML: <div class="success-modal">
+---------------------------------------------------------------- */
+.success-modal {
+  text-align: center;
+  border-radius: var(--radius-xl) !important;
+}
+
+.success-anim {
+  font-size: 64px;
+  animation: bounce 0.6s var(--ease) both;
+}
+
+.success-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--success);
+  margin-top: 12px;
+}
+
+.success-msg {
+  color: var(--text-secondary);
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.driver-eta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--bg-section);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* ----------------------------------------------------------------
+   TOAST NOTIFICATION
+   HTML: <div class="toast">
+   JS: showToast()
+---------------------------------------------------------------- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-card);
+  border: 1px solid var(--border-accent);
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-card);
+  z-index: 999;
+  transition: transform 0.3s var(--ease), opacity 0.3s;
+  white-space: nowrap;
+}
+
+/* Trạng thái hiện toast */
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+.toast.success { border-color: var(--success); color: var(--success); }
+.toast.error { border-color: var(--error); color: var(--error); }
+
+/* ----------------------------------------------------------------
+   SPINNER (loading)
+   HTML: <span class="spinner">
+---------------------------------------------------------------- */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ----------------------------------------------------------------
+   UTILITY CLASSES
+---------------------------------------------------------------- */
+/* Ẩn phần tử */
+.hidden {
+  display: none !important;
+}
+
+/* ----------------------------------------------------------------
+   KEYFRAME ANIMATIONS
+---------------------------------------------------------------- */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  60% { transform: scale(1.15) rotate(5deg); }
+  80% { transform: scale(0.95); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ----------------------------------------------------------------
+   GOOGLE AUTOCOMPLETE DROPDOWN — Override style
+   Class .pac-container sinh ra bởi Google Maps JS
+---------------------------------------------------------------- */
+.pac-container {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-accent) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5) !important;
+  font-family: var(--font-body) !important;
+}
+.pac-item {
+  padding: 10px 14px !important;
+  color: var(--text-primary) !important;
+  border-top: 1px solid var(--border) !important;
+  cursor: pointer !important;
+}
+.pac-item:hover, .pac-item-selected {
+  background: var(--bg-hover) !important;
+}
+.pac-item-query {
+  color: var(--accent) !important;
+  font-weight: 600;
+}
+.pac-matched {
+  color: var(--accent) !important;
+}
+.pac-icon { display: none !important; }
+
+/* ----------------------------------------------------------------
+   RESPONSIVE — Tablet & Mobile
+---------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .form-title { font-size: 38px; }
+
+  .vehicle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .payment-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .brand-name { font-size: 18px; }
+  .tagline { display: none; }
+
+  .time-tabs {
+    flex-direction: column;
+  }
+
+  .btn-submit {
+    font-size: 18px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .payment-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .steps-bar {
+    justify-content: flex-start;
+  }
+}
