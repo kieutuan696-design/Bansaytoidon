@@ -1,32 +1,77 @@
 <!DOCTYPE html>
 <html lang="vi">
 
+<!--
+================================================================
+index.html — BẠN SAY TÔI ĐÓN v2.0
+================================================================
+CẤU TRÚC FILE:
+  index.html  → Bố cục trang (file này)
+  style.css   → Toàn bộ giao diện, màu sắc, animation
+  script.js   → Toàn bộ logic tương tác
+ 
+THAY ĐỔI NHANH:
+  - Logo       : img/logo.png (giữ tên file)
+  - Quy trình  : img/quytrinh.jpg
+  - Hotline    : Tìm "1900 xxxx" → thay toàn bộ
+  - Màu sắc    : style.css → :root { ... }
+ 
+================================================================
+-->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bạn Say Tôi Đón - Dịch vụ lái xe hộ an toàn</title>
+    <meta name="description" content="Dịch vụ lái xe hộ, taxi sân bay, thuê xe, đăng kiểm hộ và vận chuyển xe chuyên nghiệp 24/7.">
+    <meta name="keywords" content="lái xe hộ, người say, tài xế riêng, taxi sân bay, thuê xe">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS chính
+         style.css dòng 1–end → toàn bộ giao diện -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+    <!-- ============================================================
+         HEADER — Thanh điều hướng cố định
+         Chức năng : Menu điều hướng cố định trên đầu trang, gradient tím xanh.
+                     Trên mobile: hiện nút hamburger 3 gạch.
+         CSS       : style.css → .main-header (dòng ~72)
+         JS        : script.js → Khối 1 - toggleMenu() (dòng ~10)
+         ============================================================ -->
     <header class="main-header">
         <div class="header-container">
+
+            <!-- Logo trái — Thay img/logo.png để cập nhật toàn site -->
             <a href="#" class="logo">
-                <img src="img/logo.png" alt="Bạn Say Tôi Đón" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <span class="logo-fallback"><i class="fa-solid fa-car-side"></i> BẠN SAY <span class="accent-text">TÔI ĐÓN</span></span>
+                <img src="img/logo.png" alt="Bạn Say Tôi Đón" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span class="logo-fallback">
+                    <i class="fa-solid fa-car-side"></i>
+                    BẠN SAY <span class="accent-text">TÔI ĐÓN</span>
+                </span>
             </a>
 
-            <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+            <!-- Nút hamburger 3 gạch (chỉ hiện trên mobile)
+                 JS: script.js dòng ~12 → menuToggle.addEventListener('click')
+                 CSS: style.css dòng ~154 → .menu-toggle, .bar -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Mở/đóng menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
             </button>
 
+            <!-- Menu điều hướng chính
+                 JS: script.js dòng ~12 → toggle class .open
+                 CSS: style.css dòng ~118 → .nav-menu, .nav-menu.open -->
             <nav class="nav-menu" id="navMenu">
                 <ul>
                     <li><a href="#" class="active">Trang chủ</a></li>
@@ -40,28 +85,60 @@
         </div>
     </header>
 
+
+    <!-- ============================================================
+         HERO SECTION — Banner đầu trang
+         Chức năng : Tiêu đề lớn, phụ đề, 2 nút CTA.
+                     Nút "ĐẶT XE NGAY" mở modal booking.
+         CSS       : style.css → .hero-section (dòng ~175)
+         JS        : script.js → Khối 3 - openModal (dòng ~55)
+         ============================================================ -->
     <section class="hero-section">
         <div class="hero-content scroll-reveal">
-            <h1>CHÀO MỪNG ĐẾN VỚI DỊCH VỤ BẠN SAY TÔI ĐÓN</h1>
-            <p>Dịch vụ lái xe hộ chuyên nghiệp giúp bạn và phương tiện về nhà an toàn sau mọi cuộc vui.</p>
+            <h1>CHÀO MỪNG ĐẾN VỚI<br>BẠN SAY TÔI ĐÓN</h1>
+            <p>Dịch vụ lái xe hộ chuyên nghiệp – giúp bạn và phương tiện về nhà an toàn sau mọi cuộc vui.</p>
             <div class="hero-buttons">
-                <button class="btn btn-primary open-modal-btn">ĐẶT XE NGAY</button>
-                <a href="#services" class="btn btn-secondary">XEM DỊCH VỤ</a>
+                <!-- Nút mở modal đặt xe — JS: script.js Khối 3 -->
+                <button class="btn btn-primary open-modal-btn">
+                    <i class="fa-solid fa-car-on"></i> ĐẶT XE NGAY
+                </button>
+                <a href="#services" class="btn btn-secondary">
+                    <i class="fa-solid fa-list"></i> XEM DỊCH VỤ
+                </a>
             </div>
         </div>
     </section>
 
+
+    <!-- ============================================================
+         SECTION QUY TRÌNH — Ảnh bàn giao xe
+         Chức năng : Hiển thị ảnh quy trình 1599×976, bo góc, hover zoom.
+         CSS       : style.css → .process-section (dòng ~244)
+         ÐỔI ẢNH  : Thay file img/quytrinh.jpg
+         ============================================================ -->
     <section class="process-section">
         <div class="container">
             <div class="process-wrapper scroll-reveal">
                 <div class="image-container">
-                    <img src="img/quytrinh.jpg" alt="Quy trình bàn giao xe và đưa khách hàng về nhà an toàn" onerror="this.src='https://laixehotpvinh.com/assets/skins/goilai/images/website/bg-1-992.png';">
+                    <img src="img/quytrinh.jpg" alt="Quy trình bàn giao xe – Bạn Say Tôi Đón" onerror="this.src='https://laixehotpvinh.com/assets/skins/goilai/images/website/bg-1-992.png';">
                 </div>
-                <p class="caption"><i class="fa-solid fa-circle-info"></i> Quy trình bàn giao xe và đưa khách hàng về nhà an toàn.</p>
+                <p class="caption">
+                    <i class="fa-solid fa-circle-info"></i> Quy trình bàn giao xe và đưa khách hàng về nhà an toàn.
+                </p>
             </div>
         </div>
     </section>
 
+
+    <!-- ============================================================
+         SECTION DỊCH VỤ — 8 card dịch vụ
+         Chức năng : Lưới 8 dịch vụ 3-3-2. Mỗi card có màu sắc riêng
+                     theo phong cách chủ đề của dịch vụ đó.
+                     Nút "Xem chi tiết" mở panel chi tiết riêng.
+         CSS       : style.css → .services-section, .service-card (dòng ~310)
+                                 .service-card--[theme] (màu theo chủ đề)
+         JS        : script.js → Khối 5 - openServicePanel() (dòng ~120)
+         ============================================================ -->
     <section id="services" class="services-section">
         <div class="container">
             <div class="section-header scroll-reveal">
@@ -70,127 +147,245 @@
             </div>
 
             <div class="services-grid">
-                <div class="service-card scroll-reveal">
-                    <div class="service-icon"><i class="fa-solid fa-beer-mug-empty"></i></div>
-                    <h3>Lái xe hộ người say</h3>
-                    <p>An toàn về nhà sau cuộc vui.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card scroll-reveal">
-                    <div class="service-icon"><i class="fa-solid fa-clock"></i></div>
-                    <h3>Tài xế theo giờ</h3>
-                    <p>Thuê tài xế theo giờ hoặc cả ngày.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card scroll-reveal">
-                    <div class="service-icon"><i class="fa-solid fa-plane-departure"></i></div>
-                    <h3>Taxi đưa đón sân bay</h3>
-                    <p>Đưa đón đúng giờ, giá cố định.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card scroll-reveal">
-                    <div class="service-icon"><i class="fa-solid fa-car"></i></div>
-                    <h3>Dịch vụ cho thuê xe</h3>
-                    <p>Đa dạng các dòng xe đời mới.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card scroll-reveal">
-                    <div class="service-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <h3>Dịch vụ đăng kiểm hộ</h3>
-                    <p>Tiết kiệm thời gian, thủ tục gọn lẹ.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card scroll-reveal">
-                    <div class="service-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
-                    <h3>Vận chuyển xe</h3>
-                    <p>Vận chuyển xe cứu hộ, liên tỉnh.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card scroll-reveal">
-                    <div class="service-icon"><i class="fa-solid fa-users"></i></div>
-                    <h3>Dịch vụ xe ghép</h3>
-                    <p>Đi chung xe tiết kiệm tối đa chi phí.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="service-card scroll-reveal coming-soon">
-                    <div class="service-icon"><i class="fa-solid fa-box-open"></i></div>
-                    <h3>Dịch vụ giao hàng</h3>
-                    <p>Sắp ra mắt.</p>
-                    <a href="#" class="more-link">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
 
+                <!-- ── Card 1: Lái xe hộ người say ──
+                     Chủ đề : Đêm khuya / Bar / Neon đỏ-tím
+                     CSS    : .service-card--drunk (dòng ~420)
+                     JS     : data-service="drunk" → openServicePanel('drunk') -->
+                <div class="service-card service-card--drunk scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-beer-mug-empty"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Lái xe hộ người say</h3>
+                        <p>An toàn về nhà sau cuộc vui.</p>
+                    </div>
+                    <!-- Nút mở panel chi tiết — JS Khối 5 -->
+                    <button class="more-link" data-service="drunk">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- ── Card 2: Tài xế theo giờ ──
+                     Chủ đề : Văn phòng / Lịch trình / Xanh dương -->
+                <div class="service-card service-card--hourly scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Tài xế theo giờ</h3>
+                        <p>Thuê tài xế theo giờ hoặc cả ngày.</p>
+                    </div>
+                    <button class="more-link" data-service="hourly">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- ── Card 3: Taxi sân bay ──
+                     Chủ đề : Bầu trời / Bay / Xanh da trời -->
+                <div class="service-card service-card--airport scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-plane-departure"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Taxi đưa đón sân bay</h3>
+                        <p>Đưa đón đúng giờ, giá cố định.</p>
+                    </div>
+                    <button class="more-link" data-service="airport">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- ── Card 4: Cho thuê xe ──
+                     Chủ đề : Lái thử / Tự do / Cam vàng -->
+                <div class="service-card service-card--rental scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Dịch vụ cho thuê xe</h3>
+                        <p>Đa dạng các dòng xe đời mới.</p>
+                    </div>
+                    <button class="more-link" data-service="rental">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- ── Card 5: Đăng kiểm hộ ──
+                     Chủ đề : Văn phòng / Công vụ / Xanh lá -->
+                <div class="service-card service-card--inspection scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Dịch vụ đăng kiểm hộ</h3>
+                        <p>Tiết kiệm thời gian, thủ tục gọn lẹ.</p>
+                    </div>
+                    <button class="more-link" data-service="inspection">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- ── Card 6: Vận chuyển xe ──
+                     Chủ đề : Đường cao tốc / Liên tỉnh / Cam đỏ -->
+                <div class="service-card service-card--transport scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Vận chuyển xe</h3>
+                        <p>Vận chuyển xe cứu hộ, liên tỉnh.</p>
+                    </div>
+                    <button class="more-link" data-service="transport">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- ── Card 7: Xe ghép ──
+                     Chủ đề : Cộng đồng / Tiết kiệm / Xanh cyan -->
+                <div class="service-card service-card--carpool scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Dịch vụ xe ghép</h3>
+                        <p>Đi chung xe tiết kiệm tối đa chi phí.</p>
+                    </div>
+                    <button class="more-link" data-service="carpool">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- ── Card 8: Giao hàng (Sắp ra mắt) ──
+                     Chủ đề : Bưu kiện / Giao hàng / Xám -->
+                <div class="service-card service-card--delivery coming-soon scroll-reveal">
+                    <div class="card-glow"></div>
+                    <div class="coming-soon-badge">SẮP RA MẮT</div>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <div class="service-card-body">
+                        <h3>Dịch vụ giao hàng</h3>
+                        <p>Giao hàng nhanh nội thành & liên tỉnh.</p>
+                    </div>
+                    <button class="more-link" data-service="delivery">
+                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+            <!-- /.services-grid -->
+        </div>
+        <!-- /.container -->
+    </section>
+    <!-- /#services -->
+
+
+    <!-- ============================================================
+         SECTION VÌ SAO CHỌN CHÚNG TÔI
+         Chức năng : 4 lý do với hiệu ứng scroll reveal stagger.
+         CSS       : style.css → .why-choose-us (dòng ~410)
+         ============================================================ -->
     <section id="about" class="why-choose-us">
         <div class="container">
             <div class="section-header scroll-reveal">
                 <h2 class="section-title">VÌ SAO CHỌN CHÚNG TÔI</h2>
                 <p class="section-subtitle">4 lý do hàng ngàn khách hàng đã và đang tin dùng dịch vụ</p>
             </div>
-
             <div class="why-grid">
                 <div class="why-card scroll-reveal">
                     <span class="why-number">01</span>
+                    <i class="fa-solid fa-bolt why-icon"></i>
                     <h3>ĐẶT NHANH CHÓNG</h3>
                     <p>Chỉ vài thao tác đơn giản là có tài xế chuyên nghiệp đến tận nơi đón bạn.</p>
                 </div>
                 <div class="why-card scroll-reveal">
                     <span class="why-number">02</span>
+                    <i class="fa-solid fa-magnifying-glass-location why-icon"></i>
                     <h3>TỐI ƯU TÌM KIẾM</h3>
-                    <p>Giảm tối đa thời gian chờ đợi với mạng lưới đối tác tài xế rộng khắp các quận huyện.</p>
+                    <p>Giảm tối đa thời gian chờ với mạng lưới tài xế rộng khắp các quận huyện.</p>
                 </div>
                 <div class="why-card scroll-reveal">
                     <span class="why-number">03</span>
+                    <i class="fa-solid fa-tags why-icon"></i>
                     <h3>GIÁ MINH BẠCH</h3>
-                    <p>Hiển thị chi phí chính xác trước mỗi chuyến đi — tuyệt đối không phát sinh phụ phí ẩn.</p>
+                    <p>Hiển thị chi phí chính xác trước mỗi chuyến — tuyệt đối không phát sinh phụ phí.</p>
                 </div>
                 <div class="why-card scroll-reveal">
                     <span class="why-number">04</span>
+                    <i class="fa-solid fa-share-nodes why-icon"></i>
                     <h3>CHIA SẺ HÀNH TRÌNH</h3>
-                    <p>Dễ dàng chia sẻ và theo dõi vị trí di chuyển thời gian thực trực tiếp với người thân.</p>
+                    <p>Dễ dàng theo dõi vị trí di chuyển thời gian thực với người thân.</p>
                 </div>
             </div>
         </div>
     </section>
 
+
+    <!-- ============================================================
+         SECTION ƯU ĐÃI THÀNH VIÊN MỚI
+         Chức năng : Banner ưu đãi, nút "NHẬN ƯU ĐÃI" mở modal booking.
+         CSS       : style.css → .promo-section (dòng ~452)
+         JS        : script.js → Khối 3 - open-modal-btn
+         ============================================================ -->
     <section class="promo-section">
         <div class="container">
             <div class="promo-banner scroll-reveal">
+                <div class="promo-particles"></div>
                 <h2>ƯU ĐÃI THÀNH VIÊN MỚI</h2>
                 <div class="promo-highlight">TẶNG NGAY 2.000.000Đ KHI ĐĂNG KÝ</div>
-                <p class="promo-desc">Áp dụng tự động cho mọi chuyến đi đầu tiên. Giảm tối đa 100.000đ mỗi chuyến đi hộ.</p>
-                <button class="btn btn-promo open-modal-btn">NHẬN ƯU ĐÃI NGAY <i class="fa-solid fa-arrow-right"></i></button>
+                <p class="promo-desc">Áp dụng tự động cho mọi chuyến đi đầu tiên. Giảm tối đa 100.000đ mỗi chuyến.</p>
+                <!-- Nút mở modal — JS Khối 3 -->
+                <button class="btn btn-promo open-modal-btn">
+                    NHẬN ƯU ĐÃI NGAY <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
         </div>
     </section>
 
+
+    <!-- ============================================================
+         FOOTER
+         Chức năng : 3 cột: dịch vụ, thông tin, liên hệ + social links.
+         CSS       : style.css → .main-footer (dòng ~512)
+         ÐỔI HOTLINE : Tìm "1900 xxxx" trong footer này
+         ============================================================ -->
     <footer class="main-footer">
         <div class="container footer-grid">
             <div class="footer-column">
                 <h3>DỊCH VỤ</h3>
                 <ul>
-                    <li><a href="#">Lái xe hộ</a></li>
-                    <li><a href="#">Taxi sân bay</a></li>
-                    <li><a href="#">Thuê xe</a></li>
-                    <li><a href="#">Xe ghép</a></li>
-                    <li><a href="#">Giao hàng</a></li>
+                    <li><a href="#services">Lái xe hộ người say</a></li>
+                    <li><a href="#services">Tài xế theo giờ</a></li>
+                    <li><a href="#services">Taxi sân bay</a></li>
+                    <li><a href="#services">Cho thuê xe</a></li>
+                    <li><a href="#services">Đăng kiểm hộ</a></li>
+                    <li><a href="#services">Vận chuyển xe</a></li>
+                    <li><a href="#services">Xe ghép</a></li>
                 </ul>
             </div>
-            <div class="footer-column">
+            <div class="footer-column" id="driver">
                 <h3>THÔNG TIN</h3>
                 <ul>
-                    <li><a href="#">Về chúng tôi</a></li>
-                    <li><a href="#">Chính sách bảo mật</a></li>
-                    <li><a href="#">Điều khoản sử dụng</a></li>
-                    <li><a href="#">Tuyển tài xế</a></li>
+                    <li><a href="#about">Về chúng tôi</a></li>
+                    <li><a href="#privacy">Chính sách bảo mật</a></li>
+                    <li><a href="#privacy">Điều khoản sử dụng</a></li>
+                    <li><a href="#driver">Tuyển tài xế đối tác</a></li>
                 </ul>
             </div>
             <div class="footer-column" id="contact">
                 <h3>LIÊN HỆ</h3>
                 <ul class="contact-info">
+                    <!-- ĐỔI HOTLINE TẠI ĐÂY -->
                     <li><i class="fa-solid fa-phone"></i> Hotline: <strong>1900 xxxx</strong></li>
-                    <li><i class="fa-solid fa-envelope"></i> Email: support@bansaytoidon.vn</li>
+                    <li><i class="fa-solid fa-envelope"></i> support@bansaytoidon.vn</li>
                     <li><i class="fa-solid fa-location-dot"></i> Hà Nội, Việt Nam</li>
                 </ul>
                 <div class="social-links">
@@ -205,41 +400,445 @@
         </div>
     </footer>
 
+
+    <!-- ============================================================
+         NÚT GỌI ĐIỆN CỐ ĐỊNH — Góc phải dưới màn hình
+         Chức năng : Luôn hiện ở góc dưới bên phải, dù người dùng
+                     cuộn trang đến đâu. Bấm → gọi hotline ngay.
+                     Có hiệu ứng pulse (sóng xung quanh) để thu hút mắt.
+         CSS       : style.css → .floating-call-btn (dòng ~600+)
+         ĐỔI SỐ   : Thay href="tel:19000000" bằng số thật
+         ============================================================ -->
+    <a href="tel:19000000" class="floating-call-btn" id="floatingCallBtn" aria-label="Gọi ngay hotline Bạn Say Tôi Đón">
+        <span class="pulse-ring"></span>
+        <span class="pulse-ring delay"></span>
+        <i class="fa-solid fa-phone"></i>
+        <span class="call-tooltip">1900 xxxx — Gọi ngay!</span>
+    </a>
+
+
+    <!-- ============================================================
+         SERVICE DETAIL PANELS — 8 panel chi tiết dịch vụ
+         Chức năng : Mỗi dịch vụ có 1 panel riêng, slide từ phải vào,
+                     thiết kế màu sắc theo chủ đề của dịch vụ.
+         CSS       : style.css → .service-panel, .panel-overlay (dòng ~700+)
+         JS        : script.js → Khối 5 - openServicePanel() / closeServicePanel()
+         ============================================================ -->
+
+    <!-- Overlay mờ phía sau panel — JS: addEventLister click → close -->
+    <div class="panel-overlay" id="panelOverlay"></div>
+
+    <!-- ── Panel 1: Lái xe hộ người say ──
+         Chủ đề: Đêm neon / Bar / Gradient tím đỏ
+         CSS: .service-panel.panel--drunk -->
+    <div class="service-panel panel--drunk" id="panel-drunk" role="dialog" aria-label="Chi tiết lái xe hộ">
+        <div class="panel-header">
+            <button class="panel-close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-beer-mug-empty"></i></div>
+            <h2>Lái Xe Hộ Người Say</h2>
+            <p>An toàn về nhà sau cuộc vui — 24/7</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Sau buổi tiệc hay cuộc vui, đừng để rủi ro xảy ra. Tài xế chuyên nghiệp đến <strong>tận nơi</strong>, lái <strong>xe của bạn</strong>, đưa bạn về nhà an toàn.</p>
+            </div>
+            <div class="panel-steps">
+                <h4><i class="fa-solid fa-list-check"></i> Quy trình</h4>
+                <div class="step-item"><span class="sn">1</span><span>Đặt xe qua app / hotline</span></div>
+                <div class="step-item"><span class="sn">2</span><span>Tài xế xác nhận & đến điểm đón trong 10–15 phút</span></div>
+                <div class="step-item"><span class="sn">3</span><span>Xác nhận xe, bàn giao chìa khóa & lên đường</span></div>
+                <div class="step-item"><span class="sn">4</span><span>Về đến nhà an toàn, thanh toán linh hoạt</span></div>
+            </div>
+            <div class="panel-price">
+                <h4><i class="fa-solid fa-tag"></i> Bảng giá tham khảo</h4>
+                <table class="price-tbl">
+                    <tr>
+                        <td>Dưới 5 km</td>
+                        <td><strong>120.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>5 – 10 km</td>
+                        <td><strong>180.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>10 – 20 km</td>
+                        <td><strong>300.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Trên 20 km</td>
+                        <td><strong>Liên hệ</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Nút mở modal đặt xe trực tiếp từ panel -->
+            <button class="btn btn-panel-book open-modal-btn">
+                <i class="fa-solid fa-calendar-check"></i> ĐẶT NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Panel 2: Tài xế theo giờ ──
+         Chủ đề: Văn phòng / Lịch trình / Xanh biển -->
+    <div class="service-panel panel--hourly" id="panel-hourly" role="dialog">
+        <div class="panel-header">
+            <button class="panel-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-clock"></i></div>
+            <h2>Tài Xế Theo Giờ</h2>
+            <p>Chủ động lịch trình, không lo lái xe</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Thuê tài xế riêng theo giờ hoặc cả ngày. Phù hợp cho công tác, đón tiếp đối tác, đi mua sắm, sự kiện.</p>
+            </div>
+            <div class="panel-steps">
+                <h4><i class="fa-solid fa-list-check"></i> Quy trình</h4>
+                <div class="step-item"><span class="sn">1</span><span>Đặt lịch trước tối thiểu 30 phút</span></div>
+                <div class="step-item"><span class="sn">2</span><span>Tài xế đến đúng giờ, xe sạch sẽ</span></div>
+                <div class="step-item"><span class="sn">3</span><span>Đưa đón theo lịch trình của bạn</span></div>
+                <div class="step-item"><span class="sn">4</span><span>Thanh toán theo số giờ thực tế</span></div>
+            </div>
+            <div class="panel-price">
+                <h4><i class="fa-solid fa-tag"></i> Bảng giá</h4>
+                <table class="price-tbl">
+                    <tr>
+                        <td>2 tiếng</td>
+                        <td><strong>300.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>4 tiếng</td>
+                        <td><strong>550.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Cả ngày (8h)</td>
+                        <td><strong>950.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Giờ phát sinh</td>
+                        <td><strong>+120.000đ/h</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-panel-book open-modal-btn">
+                <i class="fa-solid fa-calendar-check"></i> ĐẶT NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Panel 3: Taxi sân bay ──
+         Chủ đề: Bầu trời / Cyan xanh -->
+    <div class="service-panel panel--airport" id="panel-airport" role="dialog">
+        <div class="panel-header">
+            <button class="panel-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-plane-departure"></i></div>
+            <h2>Taxi Đưa Đón Sân Bay</h2>
+            <p>Đúng giờ — giá cố định — không lo trễ chuyến</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Theo dõi lịch bay thực tế. Xe đến trước giờ bay ít nhất 2.5 tiếng. Giá cố định, không phụ thu giờ cao điểm.</p>
+            </div>
+            <div class="panel-steps">
+                <h4><i class="fa-solid fa-list-check"></i> Quy trình</h4>
+                <div class="step-item"><span class="sn">1</span><span>Cung cấp thông tin chuyến bay & địa chỉ đón</span></div>
+                <div class="step-item"><span class="sn">2</span><span>Tài xế theo dõi lịch bay, đến đúng giờ</span></div>
+                <div class="step-item"><span class="sn">3</span><span>Đón tại cổng ra, không mất thời gian chờ</span></div>
+                <div class="step-item"><span class="sn">4</span><span>Đưa đến điểm đến, thanh toán cố định</span></div>
+            </div>
+            <div class="panel-price">
+                <h4><i class="fa-solid fa-tag"></i> Bảng giá</h4>
+                <table class="price-tbl">
+                    <tr>
+                        <td>Sân bay → Nội thành (&lt;20km)</td>
+                        <td><strong>250.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Sân bay → Ngoại thành (20–40km)</td>
+                        <td><strong>380.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Tỉnh lân cận</td>
+                        <td><strong>Liên hệ</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-panel-book open-modal-btn">
+                <i class="fa-solid fa-calendar-check"></i> ĐẶT NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Panel 4: Cho thuê xe ──
+         Chủ đề: Đường phố / Tự do / Cam vàng -->
+    <div class="service-panel panel--rental" id="panel-rental" role="dialog">
+        <div class="panel-header">
+            <button class="panel-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-car"></i></div>
+            <h2>Dịch Vụ Cho Thuê Xe</h2>
+            <p>Đa dạng — đời mới — giao xe tận nơi</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Đa dạng dòng xe từ 4–16 chỗ, xe đời mới, bảo hiểm đầy đủ. Thuê có hoặc không kèm tài xế.</p>
+            </div>
+            <div class="panel-steps">
+                <h4><i class="fa-solid fa-list-check"></i> Quy trình</h4>
+                <div class="step-item"><span class="sn">1</span><span>Chọn loại xe & thời gian thuê</span></div>
+                <div class="step-item"><span class="sn">2</span><span>Ký hợp đồng thuê xe online</span></div>
+                <div class="step-item"><span class="sn">3</span><span>Xe giao tận địa chỉ theo giờ yêu cầu</span></div>
+                <div class="step-item"><span class="sn">4</span><span>Sử dụng, trả xe, hoàn tiền cọc</span></div>
+            </div>
+            <div class="panel-price">
+                <h4><i class="fa-solid fa-tag"></i> Bảng giá</h4>
+                <table class="price-tbl">
+                    <tr>
+                        <td>Xe 4 chỗ / ngày</td>
+                        <td><strong>800.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Xe 7 chỗ / ngày</td>
+                        <td><strong>1.100.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Xe 16 chỗ / ngày</td>
+                        <td><strong>1.800.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Theo tuần/tháng</td>
+                        <td><strong>Ưu đãi 20%</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-panel-book open-modal-btn">
+                <i class="fa-solid fa-calendar-check"></i> ĐẶT NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Panel 5: Đăng kiểm hộ ──
+         Chủ đề: Công vụ / Xanh lá -->
+    <div class="service-panel panel--inspection" id="panel-inspection" role="dialog">
+        <div class="panel-header">
+            <button class="panel-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+            <h2>Dịch Vụ Đăng Kiểm Hộ</h2>
+            <p>Tiết kiệm thời gian — không xếp hàng</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Đến lấy xe tại nhà, hoàn tất toàn bộ thủ tục đăng kiểm và trả xe về tận nơi. Bạn chỉ cần ngồi chờ thông báo.</p>
+            </div>
+            <div class="panel-steps">
+                <h4><i class="fa-solid fa-list-check"></i> Quy trình</h4>
+                <div class="step-item"><span class="sn">1</span><span>Đặt lịch, cung cấp thông tin xe & giấy tờ</span></div>
+                <div class="step-item"><span class="sn">2</span><span>Tài xế đến lấy xe & giấy tờ đăng kiểm</span></div>
+                <div class="step-item"><span class="sn">3</span><span>Thực hiện đăng kiểm, thông báo kết quả</span></div>
+                <div class="step-item"><span class="sn">4</span><span>Trả xe & giấy tờ tận nhà</span></div>
+            </div>
+            <div class="panel-price">
+                <h4><i class="fa-solid fa-tag"></i> Phí dịch vụ</h4>
+                <table class="price-tbl">
+                    <tr>
+                        <td>Xe con (lấy và trả)</td>
+                        <td><strong>250.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Xe tải nhỏ &lt;3.5T</td>
+                        <td><strong>350.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Phí đăng kiểm Nhà nước</td>
+                        <td><strong>Theo quy định</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-panel-book open-modal-btn">
+                <i class="fa-solid fa-calendar-check"></i> ĐẶT NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Panel 6: Vận chuyển xe ──
+         Chủ đề: Đường cao tốc / Cam đỏ -->
+    <div class="service-panel panel--transport" id="panel-transport" role="dialog">
+        <div class="panel-header">
+            <button class="panel-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
+            <h2>Vận Chuyển Xe Liên Tỉnh</h2>
+            <p>An toàn — có bảo hiểm — định vị theo dõi</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Vận chuyển ô tô liên tỉnh bằng xe chuyên dụng. Bảo hiểm hàng hóa đầy đủ, định vị GPS theo dõi hành trình.</p>
+            </div>
+            <div class="panel-steps">
+                <h4><i class="fa-solid fa-list-check"></i> Quy trình</h4>
+                <div class="step-item"><span class="sn">1</span><span>Báo thông tin xe & tuyến đường cần vận chuyển</span></div>
+                <div class="step-item"><span class="sn">2</span><span>Nhận báo giá & ký hợp đồng vận chuyển</span></div>
+                <div class="step-item"><span class="sn">3</span><span>Xe chuyên dụng đến nhận xe, giao cho đơn vị vận chuyển</span></div>
+                <div class="step-item"><span class="sn">4</span><span>Giao xe tại địa chỉ điểm đến, bàn giao biên nhận</span></div>
+            </div>
+            <div class="panel-price">
+                <h4><i class="fa-solid fa-tag"></i> Giá tham khảo</h4>
+                <table class="price-tbl">
+                    <tr>
+                        <td>HN – TP.HCM</td>
+                        <td><strong>3.500.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>HN – Đà Nẵng</td>
+                        <td><strong>2.200.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Tỉnh lân cận (&lt;100km)</td>
+                        <td><strong>600.000đ</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-panel-book open-modal-btn">
+                <i class="fa-solid fa-calendar-check"></i> ĐẶT NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Panel 7: Xe ghép ──
+         Chủ đề: Cộng đồng / Cyan xanh lá -->
+    <div class="service-panel panel--carpool" id="panel-carpool" role="dialog">
+        <div class="panel-header">
+            <button class="panel-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-users"></i></div>
+            <h2>Dịch Vụ Xe Ghép</h2>
+            <p>Đi chung — tiết kiệm — khởi hành mỗi ngày</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Đi chung xe để tiết kiệm chi phí tối đa. Lịch khởi hành cố định mỗi ngày giữa các tỉnh thành lớn.</p>
+            </div>
+            <div class="panel-steps">
+                <h4><i class="fa-solid fa-list-check"></i> Quy trình</h4>
+                <div class="step-item"><span class="sn">1</span><span>Chọn tuyến & đặt chỗ trước</span></div>
+                <div class="step-item"><span class="sn">2</span><span>Xác nhận chỗ ngồi, nhận thông tin tài xế</span></div>
+                <div class="step-item"><span class="sn">3</span><span>Đến điểm đón đúng giờ khởi hành</span></div>
+                <div class="step-item"><span class="sn">4</span><span>Đến nơi, thanh toán theo chỗ ngồi</span></div>
+            </div>
+            <div class="panel-price">
+                <h4><i class="fa-solid fa-tag"></i> Giá theo tuyến</h4>
+                <table class="price-tbl">
+                    <tr>
+                        <td>HN → Vũng Tàu</td>
+                        <td><strong>180.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>HN → Đà Lạt</td>
+                        <td><strong>280.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>HN → Phan Thiết</td>
+                        <td><strong>230.000đ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>HN → Cần Thơ</td>
+                        <td><strong>160.000đ</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-panel-book open-modal-btn">
+                <i class="fa-solid fa-calendar-check"></i> ĐẶT NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Panel 8: Giao hàng (Sắp ra mắt) ──
+         Chủ đề: Bưu kiện / Xám trung tính -->
+    <div class="service-panel panel--delivery" id="panel-delivery" role="dialog">
+        <div class="panel-header">
+            <button class="panel-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-hero-icon"><i class="fa-solid fa-box-open"></i></div>
+            <h2>Dịch Vụ Giao Hàng</h2>
+            <p>Sắp ra mắt — Đăng ký nhận thông báo sớm</p>
+        </div>
+        <div class="panel-body">
+            <div class="panel-intro">
+                <p>Dịch vụ giao hàng nhanh nội thành & liên tỉnh đang trong quá trình hoàn thiện. Đăng ký để nhận ưu đãi ngay khi ra mắt.</p>
+            </div>
+            <div class="panel-coming-soon-block">
+                <i class="fa-solid fa-rocket"></i>
+                <h3>Ra mắt trong thời gian sớm nhất!</h3>
+                <p>Theo dõi Fanpage hoặc để lại số điện thoại để nhận thông báo ưu tiên.</p>
+            </div>
+            <div class="panel-notify-form">
+                <input type="tel" id="notifyPhone" placeholder="Nhập số điện thoại để nhận thông báo...">
+                <button class="btn btn-panel-book" id="notifySubmit">
+                    <i class="fa-solid fa-bell"></i> ĐĂNG KÝ THÔNG BÁO
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================================
+         MODAL ĐẶT XE — Form booking chính
+         Chức năng : Form 5 bước đặt xe lái hộ. Mở từ nhiều nút
+                     có class .open-modal-btn trên toàn trang.
+         CSS       : style.css → .modal-overlay, .modal-box (dòng ~604)
+         JS        : script.js → Khối 3, 4 — openModal/closeModal, form logic
+         ============================================================ -->
     <div class="modal-overlay" id="bookingModal">
         <div class="modal-box">
+
+            <!-- Header modal — cố định trên đầu khi scroll -->
             <div class="modal-header">
                 <h2><i class="fa-solid fa-calendar-check"></i> ĐĂNG KÝ ĐẶT XE</h2>
-                <button class="close-modal" id="closeModal">&times;</button>
+                <!-- Nút đóng modal — JS: closeModal() -->
+                <button class="close-modal" id="closeModal" aria-label="Đóng">&times;</button>
             </div>
 
+            <!-- Form đặt xe — JS: script.js Khối 4 (toàn bộ form logic)
+                 Giữ nguyên hoàn toàn từ code gốc -->
             <form id="orderForm" class="modal-body">
 
+                <!-- Bước 1: Lộ trình
+                     JS: geoBtn → Geolocation API (Khối 4F)
+                         btn-quick → điền nhanh điểm đến (Khối 4A) -->
                 <div class="form-section">
-                    <label class="section-label"><span class="step">1</span> Thông tin lộ trình</label>
+                    <label class="section-label">
+                        <span class="step">1</span> Thông tin lộ trình
+                    </label>
 
                     <div class="input-group">
-                        <label for="pickupInput"><i class="fa-solid fa-location-crosshairs icon-pickup"></i> Điểm đón hiện tại</label>
+                        <label for="pickupInput">
+                            <i class="fa-solid fa-location-crosshairs icon-pickup"></i> Điểm đón hiện tại
+                        </label>
                         <div class="input-with-btn">
                             <input type="text" id="pickupInput" placeholder="Nhập địa chỉ đón khách..." required>
-                            <button type="button" id="geoBtn" class="btn-inside" title="Định vị vị trí"><i class="fa-solid fa-gretchen"></i> Định vị</button>
+                            <!-- Nút định vị GPS — JS Khối 4F -->
+                            <button type="button" id="geoBtn" class="btn-inside" title="Định vị vị trí">
+                                <i class="fa-solid fa-location-arrow"></i> Định vị
+                            </button>
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label for="dropoffInput"><i class="fa-solid fa-location-dot icon-dropoff"></i> Điểm đến</label>
+                        <label for="dropoffInput">
+                            <i class="fa-solid fa-location-dot icon-dropoff"></i> Điểm đến
+                        </label>
                         <input type="text" id="dropoffInput" placeholder="Nhập địa chỉ điểm đến..." required>
                     </div>
 
+                    <!-- Chọn nhanh điểm đến — JS Khối 4A -->
                     <div class="quick-options">
-                        <span class="quick-title">Chọn nhanh điểm đến:</span>
-                        <button type="button" class="btn-quick" data-dest="Nhà riêng (Phú Xuyên, Hà Nội)">Về nhà</button>
+                        <span class="quick-title">Chọn nhanh:</span>
+                        <button type="button" class="btn-quick" data-dest="Nhà riêng">Về nhà</button>
                         <button type="button" class="btn-quick" data-dest="Cơ quan / Trường học">Cơ quan</button>
                         <button type="button" class="btn-quick" data-dest="Khách sạn trung tâm">Khách sạn</button>
                     </div>
                 </div>
 
+                <!-- Bước 2: Phương tiện
+                     JS: vehicleRadioBtns → toggle moto/car specs (Khối 4C) -->
                 <div class="form-section">
-                    <label class="section-label"><span class="step">2</span> Thông tin phương tiện cần lái</label>
+                    <label class="section-label">
+                        <span class="step">2</span> Thông tin phương tiện cần lái
+                    </label>
 
                     <label>Loại xe cần bàn giao:</label>
                     <div class="vehicle-type-grid">
@@ -259,6 +858,7 @@
                         </label>
                     </div>
 
+                    <!-- Specs xe máy — JS Khối 4C toggle -->
                     <div class="input-group sub-select-group" id="motoSpecs">
                         <label for="motoType">Phân loại xe máy</label>
                         <select id="motoType">
@@ -268,6 +868,7 @@
                         </select>
                     </div>
 
+                    <!-- Specs ô tô — JS Khối 4C toggle, mặc định ẩn -->
                     <div class="input-group sub-select-group hidden" id="carSpecs">
                         <label for="carType">Phân loại ô tô</label>
                         <select id="carType">
@@ -283,19 +884,27 @@
                     </div>
                 </div>
 
+                <!-- Bước 3: Thông tin liên hệ
+                     JS: bookingForOtherCheckbox → toggle otherPassengerInfo (Khối 4D) -->
                 <div class="form-section">
-                    <label class="section-label"><span class="step">3</span> Thông tin liên hệ</label>
+                    <label class="section-label">
+                        <span class="step">3</span> Thông tin liên hệ
+                    </label>
 
                     <div class="input-group">
                         <label for="phoneInput">Số điện thoại người đi</label>
                         <input type="tel" id="phoneInput" placeholder="Nhập số điện thoại liên hệ..." required>
                     </div>
 
+                    <!-- Checkbox đặt hộ — JS Khối 4D -->
                     <div class="checkbox-group">
                         <input type="checkbox" id="bookingForOther">
-                        <label for="bookingForOther" class="checkbox-custom-label"><strong>Đặt hộ người khác</strong></label>
+                        <label for="bookingForOther" class="checkbox-custom-label">
+                            <strong>Đặt hộ người khác</strong>
+                        </label>
                     </div>
 
+                    <!-- Thông tin người đi hộ — mặc định ẩn, JS Khối 4D toggle -->
                     <div id="otherPassengerInfo" class="hidden-fields hidden">
                         <div class="input-group">
                             <label for="otherName">Tên người đi hộ</label>
@@ -308,14 +917,21 @@
                     </div>
                 </div>
 
+                <!-- Bước 4: Thời gian & ghi chú
+                     JS: timeNowBtn/timeScheduleBtn → toggle scheduleInputs (Khối 4E)
+                         btn-quick-note → append ghi chú (Khối 4B) -->
                 <div class="form-section">
-                    <label class="section-label"><span class="step">4</span> Thời gian & Ghi chú thêm</label>
+                    <label class="section-label">
+                        <span class="step">4</span> Thời gian & Ghi chú thêm
+                    </label>
 
+                    <!-- Toggle thời gian đón — JS Khối 4E -->
                     <div class="time-option-toggle">
                         <button type="button" class="btn-time-choice active" id="timeNow">Đón ngay bây giờ</button>
                         <button type="button" class="btn-time-choice" id="timeSchedule">Đặt lịch trước</button>
                     </div>
 
+                    <!-- Input chọn ngày giờ — JS Khối 4E, mặc định ẩn -->
                     <div id="scheduleInputs" class="input-group hidden">
                         <label for="scheduleDateTime">Chọn ngày & giờ đón</label>
                         <input type="datetime-local" id="scheduleDateTime">
@@ -323,9 +939,10 @@
 
                     <div class="input-group">
                         <label for="driverNotes">Ghi chú đặc biệt cho tài xế</label>
-                        <textarea id="driverNotes" rows="2" placeholder="Ghi chú chi tiết cho tài xế tìm bạn dễ hơn..."></textarea>
+                        <textarea id="driverNotes" rows="2" placeholder="Ghi chú chi tiết để tài xế tìm bạn dễ hơn..."></textarea>
                     </div>
 
+                    <!-- Nút ghi chú nhanh — JS Khối 4B append vào textarea -->
                     <div class="quick-notes">
                         <button type="button" class="btn-quick-note">Tôi đang ở trong quán</button>
                         <button type="button" class="btn-quick-note">Xe gửi ở hầm</button>
@@ -334,8 +951,11 @@
                     </div>
                 </div>
 
+                <!-- Bước 5: Mã giảm giá & thanh toán -->
                 <div class="form-section">
-                    <label class="section-label"><span class="step">5</span> Mã giảm giá & Thanh toán</label>
+                    <label class="section-label">
+                        <span class="step">5</span> Mã giảm giá & Thanh toán
+                    </label>
 
                     <div class="input-group">
                         <label for="couponInput">Mã ưu đãi (Nếu có)</label>
@@ -354,11 +974,23 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-submit-order">XÁC NHẬN ĐẶT XE NGAY</button>
-            </form>
-        </div>
-    </div>
+                <!-- Nút xác nhận đặt xe — JS Khối 4G submit handler -->
+                <button type="submit" class="btn btn-submit-order">
+                    <i class="fa-solid fa-car-on"></i> XÁC NHẬN ĐẶT XE NGAY
+                </button>
 
+            </form>
+            <!-- /#orderForm -->
+        </div>
+        <!-- /.modal-box -->
+    </div>
+    <!-- /.modal-overlay #bookingModal -->
+
+
+    <!-- ============================================================
+         JAVASCRIPT — Đặt cuối body để DOM sẵn sàng
+         script.js → toàn bộ logic tương tác trang
+         ============================================================ -->
     <script src="script.js"></script>
 </body>
 
