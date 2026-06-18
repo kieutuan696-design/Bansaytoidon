@@ -1173,4 +1173,40 @@ document.addEventListener("DOMContentLoaded", function() {
             carpoolForm.reset();
         });
     }
+
+
+
+
+
+    // LOGIC VIDEO QUY TRÌNH
+    const processVideo = document.getElementById('processVideo');
+    const staticImage = document.getElementById('staticImage');
+    let videoPlayed = false;
+
+    function handleProcessVideo() {
+        const rect = processVideo.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8 && rect.bottom > 0) {
+            if (!videoPlayed) {
+                processVideo.play().catch(() => {});
+                videoPlayed = true;
+
+                // Sau 1 phút 6 giây → chuyển sang ảnh tĩnh
+                setTimeout(() => {
+                    if (processVideo) {
+                        processVideo.pause();
+                        staticImage.classList.remove('hidden');
+                    }
+                }, 66000);
+            }
+        } else {
+            // Cuộn ra ngoài → reset để lần sau phát lại
+            if (videoPlayed) {
+                videoPlayed = false;
+                staticImage.classList.add('hidden');
+                processVideo.currentTime = 0;
+            }
+        }
+    }
+
+    window.addEventListener('scroll', handleProcessVideo);
 });
