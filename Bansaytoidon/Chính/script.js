@@ -626,7 +626,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             console.log("Dữ liệu đơn hàng đặt tài xế theo giờ:", bookingData);
             alert(
-                `🎉 Đặt tài xế thành công!\nGói: ${bookingData.package}\nTổng thanh toán: ${bookingData.totalPrice}\nTài xế sẽ liên hệ bạn ngay.`,
+                `🎉 Đặt tài xế thành công!\nGói: ${bookingData.package}\nTổng thanh toán: ${bookingData.totalPrice}\nTài xế sẽ liên hệ bạn ngay :).`,
             );
 
             hourlyModal.style.display = "none"; // Đóng bảng đăng ký
@@ -1154,8 +1154,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 route: routeSelect.value,
                 seats: document.querySelector('input[name="carpoolType"]:checked').value ===
                     "Ghép ghế" ?
-                    seatsSelect.value :
-                    "Bao xe",
+                    seatsSelect.value : "Bao xe",
                 pickup: document.getElementById("carpoolPickup").value,
                 dropoff: document.getElementById("carpoolDropoff").value,
                 date: document.getElementById("carpoolDate").value,

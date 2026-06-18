@@ -93,16 +93,17 @@ THAY ĐỔI NHANH:
          JS        : script.js → Khối 3 - openModal (dòng ~55)
          ============================================================ -->
     <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <!-- Overlay tối để chữ nổi -->
         <div class="hero-content scroll-reveal">
             <h1>CHÀO MỪNG ĐẾN VỚI<br />BẠN SAY TÔI ĐÓN</h1>
             <p>
                 Dịch vụ lái xe hộ chuyên nghiệp – giúp bạn và phương tiện về nhà an toàn sau mọi cuộc vui.
             </p>
             <div class="hero-buttons">
-                <!-- Nút mở modal đặt xe — JS: script.js Khối 3 -->
                 <button class="btn btn-primary open-modal-btn">
-            <i class="fa-solid fa-car-on"></i> ĐẶT XE NGAY
-          </button>
+                    <i class="fa-solid fa-car-on"></i> ĐẶT XE NGAY
+                </button>
                 <a href="#services" class="btn btn-secondary">
                     <i class="fa-solid fa-list"></i> XEM DỊCH VỤ
                 </a>
@@ -903,7 +904,7 @@ THAY ĐỔI NHANH:
          JS        : script.js → Khối 3, 4 — openModal/closeModal, form logic
          ============================================================ -->
     <div class="modal-overlay" id="bookingModal">
-        <div class="modal-box">
+        <div class="modal-box ">
             <!-- Header modal — cố định trên đầu khi scroll -->
             <div class="modal-header">
                 <h2><i class="fa-solid fa-calendar-check"></i> ĐĂNG KÝ ĐẶT XE</h2>
